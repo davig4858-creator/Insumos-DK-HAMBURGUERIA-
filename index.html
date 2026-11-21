@@ -42,22 +42,31 @@ input {width:100%;padding:11px;border-radius:8px;border:1px solid #7b2cbf;backgr
 <input type="text" id="nomeCliente" placeholder="Nome do cliente">
 <input type="text" id="enderecoCliente" placeholder="Endereço">
 <input type="number" id="taxaEntrega" step="0.01" placeholder="Taxa de Entrega R$">
-<div class="aviso">🎁 Combo do dia — digite o nome e o valor abaixo:</div>
-<input type="text" id="nomeCombo" placeholder="Nome do Combo (ex: Combo Terça)">
-<input type="number" id="valorCombo" step="0.01" placeholder="Valor R$">
-<button class="botao botaoVerde" onclick="adicionarComboAoPedido()">➕ Adicionar Combo ao Pedido</button>
+
+<div class="aviso">🎁 Combo — digite nome e valor e adicione ao pedido:</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+<input type="text" id="nomeCombo" placeholder="Nome do Combo" style="flex:1;min-width:180px;margin:0;">
+<input type="number" id="valorCombo" step="0.01" placeholder="R$" style="width:120px;margin:0;">
+</div>
+<button class="botao botaoVerde" style="margin-top:8px;" onclick="adicionarComboAoPedido()">➕ Adicionar Combo</button>
+
 <h3>🍔 Lanches disponíveis:</h3>
 <div id="listaLanchesPedido"></div>
+
 <h3>📝 Itens do pedido:</h3>
 <div id="itensDoPedido"></div>
+
 <div class="totalDia">💰 Total vendido no dia: R$ <span id="somaDia">0.00</span></div>
+
 <button class="botao botaoVerde" onclick="finalizarPedido()">✅ Finalizar Pedido</button>
 <button class="botao botaoDourado" onclick="imprimirPedido()">🖨️ Imprimir Pedido</button>
-<button class="botao botaoDourado" onclick="salvarEDownloadDia()">💾 Salvar e baixar vendas do dia</button>
-<button class="botao botaoVermelho" onclick="limparHistoricoDia()">🗑️ Limpar histórico para o próximo dia</button>
+<button class="botao botaoDourado" onclick="salvarEDownloadDia()">💾 Salvar e baixar vendas</button>
+<button class="botao botaoVermelho" onclick="limparHistoricoDia()">🗑️ Limpar histórico</button>
+
 <h3>📜 Histórico de pedidos do dia:</h3>
 <div id="historicoPedidos"></div>
 </div>
+
 <div class="conteudoAba" id="aba1">
 <h2>Cadastrar Lanches do Cardápio</h2>
 <input type="text" id="nomeLancheNovo" placeholder="Ex: Dk JR">
@@ -66,30 +75,188 @@ input {width:100%;padding:11px;border-radius:8px;border:1px solid #7b2cbf;backgr
 <h3>📋 Lanches cadastrados:</h3>
 <div id="listaLanchesCadastrados"></div>
 </div>
+
 <script>
 let abaAtual=0,lanches=[],itensPedidoAtual=[],historicoPedidos=[];
+
 function salvarLocal(c,v){try{localStorage.setItem(c,JSON.stringify(v));return true}catch(e){return false}}
 function carregarLocal(c){try{const d=localStorage.getItem(c);return d?JSON.parse(d):[]}catch(e){return []}}
 function baixarArquivoTexto(n,t){const b=new Blob([t],{type:'text/plain'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
-document.addEventListener('DOMContentLoaded',function(){lanches=carregarLocal('lanches');historicoPedidos=carregarLocal('historicoPedidos');mudarAba(0)});
-function mudarAba(n){abaAtual=n;document.querySelectorAll('.conteudoAba').forEach((e,i)=>e.classList.toggle('visivel',i===n));document.querySelectorAll('.botaoAba').forEach((e,i)=>e.classList.toggle('ativa',i===n));carregarLanchesPedido();carregarListaCadastrados();carregarHistorico();calcularTotalDoDia()}
-function adicionarComboAoPedido(){const n=document.getElementById('nomeCombo').value.trim(),v=Number(document.getElementById('valorCombo').value);if(!n||!v||v<=0){alert('⚠️ Preencha nome e valor corretamente!');return}itensPedidoAtual.push({nome:'🎁 '+n,preco:v});document.getElementById('nomeCombo').value='';document.getElementById('valorCombo').value='';atualizarItensPedido();alert('✅ Combo adicionado!')}
-function carregarLanchesPedido(){const d=document.getElementById('listaLanchesPedido');d.innerHTML='';lanches.forEach(l=>{const q=contarItemPedido(l.nome);d.innerHTML+=`<div class="item"><span>${l.nome} — R$ ${Number(l.preco).toFixed(2)}</span><div class="botoesQuantidade"><button class="botaoMenos" onclick="removerUmDoPedido('${l.nome}')">−</button><span class="quantidadeItem">${q}</span><button class="botaoMais" onclick="adicionarAoPedido('${l.nome}',${l.preco})">+</button></div></div>`})}
+
+document.addEventListener('DOMContentLoaded',function(){
+  lanches=carregarLocal('lanches');
+  historicoPedidos=carregarLocal('historicoPedidos');
+  mudarAba(0);
+});
+
+function mudarAba(n){
+  abaAtual=n;
+  document.querySelectorAll('.conteudoAba').forEach((e,i)=>e.classList.toggle('visivel',i===n));
+  document.querySelectorAll('.botaoAba').forEach((e,i)=>e.classList.toggle('ativa',i===n));
+  carregarLanchesPedido();
+  carregarListaCadastrados();
+  carregarHistorico();
+  calcularTotalDoDia();
+}
+
+function adicionarComboAoPedido(){
+  const n=document.getElementById('nomeCombo').value.trim();
+  const v=Number(document.getElementById('valorCombo').value);
+  if(!n||!v||v<=0){alert('⚠️ Preencha o nome e o valor do combo!');return}
+  itensPedidoAtual.push({nome:'🎁 '+n,preco:v});
+  document.getElementById('nomeCombo').value='';
+  document.getElementById('valorCombo').value='';
+  atualizarItensPedido();
+  alert('✅ Combo adicionado! Agora é só finalizar o pedido!');
+}
+
+function carregarLanchesPedido(){
+  const d=document.getElementById('listaLanchesPedido');
+  d.innerHTML='';
+  lanches.forEach(l=>{
+    const q=contarItemPedido(l.nome);
+    d.innerHTML+=`<div class="item"><span>${l.nome} — R$ ${Number(l.preco).toFixed(2)}</span><div class="botoesQuantidade"><button class="botaoMenos" onclick="removerUmDoPedido('${l.nome}')">−</button><span class="quantidadeItem">${q}</span><button class="botaoMais" onclick="adicionarAoPedido('${l.nome}',${l.preco})">+</button></div></div>`;
+  });
+}
+
 function contarItemPedido(n){return itensPedidoAtual.filter(i=>i.nome===n).length}
 function adicionarAoPedido(n,v){itensPedidoAtual.push({nome:n,preco:v});atualizarItensPedido();carregarLanchesPedido()}
 function removerUmDoPedido(n){const i=itensPedidoAtual.findIndex(x=>x.nome===n);if(i!==-1){itensPedidoAtual.splice(i,1);atualizarItensPedido();carregarLanchesPedido()}}
-function atualizarItensPedido(){const d=document.getElementById('itensDoPedido');d.innerHTML='';itensPedidoAtual.forEach((x,i)=>{d.innerHTML+=`<div class="item"><span>${x.nome} — R$ ${x.preco.toFixed(2)}</span><button class="botao botaoVermelho" style="width:auto;padding:8px 12px;" onclick="removerItem(${i})">Remover</button></div>`})}
+
+function atualizarItensPedido(){
+  const d=document.getElementById('itensDoPedido');
+  d.innerHTML='';
+  itensPedidoAtual.forEach((x,i)=>{
+    d.innerHTML+=`<div class="item"><span>${x.nome} — R$ ${x.preco.toFixed(2)}</span><button class="botao botaoVermelho" style="width:auto;padding:8px 12px;" onclick="removerItem(${i})">Remover</button></div>`;
+  });
+}
+
 function removerItem(i){itensPedidoAtual.splice(i,1);atualizarItensPedido();carregarLanchesPedido()}
-function finalizarPedido(){const nc=document.getElementById('nomeCliente').value.trim(),ec=document.getElementById('enderecoCliente').value.trim(),tx=Number(document.getElementById('taxaEntrega').value)||0;if(!nc||itensPedidoAtual.length===0){alert('⚠️ Preencha nome do cliente e os itens!');return}let t=0;itensPedidoAtual.forEach(i=>t+=i.preco);t+=tx;const p={dataHora:new Date().toLocaleString('pt-BR'),nomeCliente:nc,endereco:ec,taxaEntrega:tx,itens:[...itensPedidoAtual],total:t};historicoPedidos.push(p);salvarLocal('historicoPedidos',historicoPedidos);carregarHistorico();calcularTotalDoDia();itensPedidoAtual=[];document.getElementById('nomeCliente').value='';document.getElementById('enderecoCliente').value='';document.getElementById('taxaEntrega').value='';atualizarItensPedido();carregarLanchesPedido();alert('✅ Pedido finalizado!')}
-function calcularTotalDoDia(){let t=0;historicoPedidos.forEach(p=>t+=p.total);document.getElementById('somaDia').textContent=t.toFixed(2);salvarLocal('vendasDia',t)}
-function carregarHistorico(){const d=document.getElementById('historicoPedidos');d.innerHTML='';historicoPedidos.forEach((p,i)=>{let it='';p.itens.forEach(x=>it+=x.nome+' R$ '+x.preco.toFixed(2)+'<br>');d.innerHTML+=`<div class="historicoPedido"><strong>DK HAMBURGUERIA</strong><br>${p.dataHora}<br><strong>Cliente: ${p.nomeCliente}</strong><br>Endereço: ${p.endereco}<br>Taxa de Entrega: R$ ${p.taxaEntrega.toFixed(2)}<br>${it}<strong>TOTAL: R$ ${p.total.toFixed(2)}</strong><br><button class="botao botaoVermelho" style="margin-top:8px;" onclick="excluirPedidoDoDia(${i})">🗑️ Excluir este pedido</button></div>`})}
-function excluirPedidoDoDia(i){if(!confirm('⚠️ Tem certeza?'))return;historicoPedidos.splice(i,1);salvarLocal('historicoPedidos',historicoPedidos);carregarHistorico();calcularTotalDoDia()}
-function imprimirPedido(){const nc=document.getElementById('nomeCliente').value,ec=document.getElementById('enderecoCliente').value,tx=Number(document.getElementById('taxaEntrega').value)||0;let t=0,txt='DK HAMBURGUERIA\\n-------------------------\\nCLIENTE: '+nc+'\\nENDEREÇO: '+ec+'\\nTAXA DE ENTREGA: R$ '+tx.toFixed(2)+'\\n-------------------------\\n';itensPedidoAtual.forEach(x=>{txt+=x.nome+'  R$ '+x.preco.toFixed(2)+'\\n';t+=x.preco});t+=tx;txt+='-------------------------\\nTOTAL: R$ '+t.toFixed(2)+'\\n-------------------------\\n';window.location.href='rawbt://print?text='+encodeURIComponent(txt)}
-function salvarEDownloadDia(){calcularTotalDoDia();const d=new Date().toLocaleDateString('pt-BR').replace(/\\//g,'-');let r='DK HAMBURGUERIA - RELATÓRIO DE VENDAS\\nGerado em: '+new Date().toLocaleString('pt-BR')+'\\nQuantidade de pedidos: '+historicoPedidos.length+'\\n----------------------------------------\\n';for(let i=0;i<historicoPedidos.length;i++){const p=historicoPedidos[i];r+='PEDIDO '+(i+1)+'\\nData/Hora: '+p.dataHora+'\\nCliente: '+p.nomeCliente+'\\nEndereço: '+p.endereco+'\\nTaxa de Entrega: R$ '+p.taxaEntrega.toFixed(2)+'\\nItens:\\n';p.itens.forEach(x=>r+='  - '+x.nome+'  R$ '+x.preco.toFixed(2)+'\\n');r+='TOTAL DO PEDIDO: R$ '+p.total.toFixed(2)+'\\n----------------------------------------\\n'}let g=0;historicoPedidos.forEach(x=>g+=x.total);r+='TOTAL GERAL DO DIA: R$ '+g.toFixed(2)+'\\n';baixarArquivoTexto('todas_vendas_'+d+'.txt',r);alert('💾 Relatório baixado!')}
-function limparHistoricoDia(){if(!confirm('⚠️ Faça o download primeiro! Limpar tudo?'))return;historicoPedidos=[];salvarLocal('historicoPedidos',historicoPedidos);carregarHistorico();calcularTotalDoDia();alert('🗑️ Limpo! Pronto para amanhã!')}
-function cadastrarLanche(){const n=document.getElementById('nomeLancheNovo').value.trim(),v=Number(document.getElementById('precoLancheNovo').value);if(!n||!v||v<=0){alert('⚠️ Preencha nome e preço válido!');return}lanches.push({nome:n,preco:v});salvarLocal('lanches',lanches);document.getElementById('nomeLancheNovo').value='';document.getElementById('precoLancheNovo').value='';carregarLanchesPedido();carregarListaCadastrados();alert('✅ Lanche cadastrado!')}
-function carregarListaCadastrados(){const d=document.getElementById('listaLanchesCadastrados');d.innerHTML='';lanches.forEach((l,i)=>{d.innerHTML+=`<div class="item"><span>${l.nome} — R$ ${Number(l.preco).toFixed(2)}</span><button class="botao botaoVermelho" style="width:auto;padding:8px 12px;" onclick="excluirLanche(${i})">Excluir</button></div>`})}
-function excluirLanche(i){lanches.splice(i,1);salvarLocal('lanches',lanches);carregarLanchesPedido();carregarListaCadastrados()}
+
+function finalizarPedido(){
+  const nc=document.getElementById('nomeCliente').value.trim();
+  const ec=document.getElementById('enderecoCliente').value.trim();
+  const tx=Number(document.getElementById('taxaEntrega').value)||0;
+  if(!nc||itensPedidoAtual.length===0){alert('⚠️ Preencha o nome do cliente e adicione os itens!');return}
+  
+  let t=0;
+  itensPedidoAtual.forEach(i=>t+=i.preco);
+  t+=tx;
+
+  const p={
+    dataHora:new Date().toLocaleString('pt-BR'),
+    nomeCliente:nc,
+    endereco:ec,
+    taxaEntrega:tx,
+    itens:[...itensPedidoAtual],
+    total:t
+  };
+  
+  historicoPedidos.push(p);
+  salvarLocal('historicoPedidos',historicoPedidos);
+  carregarHistorico();
+  calcularTotalDoDia();
+  
+  itensPedidoAtual=[];
+  document.getElementById('nomeCliente').value='';
+  document.getElementById('enderecoCliente').value='';
+  document.getElementById('taxaEntrega').value='';
+  atualizarItensPedido();
+  carregarLanchesPedido();
+  
+  alert('✅ Pedido finalizado!');
+}
+
+function calcularTotalDoDia(){
+  let t=0;
+  historicoPedidos.forEach(p=>t+=p.total);
+  document.getElementById('somaDia').textContent=t.toFixed(2);
+  salvarLocal('vendasDia',t);
+}
+
+function carregarHistorico(){
+  const d=document.getElementById('historicoPedidos');
+  d.innerHTML='';
+  historicoPedidos.forEach((p,i)=>{
+    let it='';
+    p.itens.forEach(x=>it+=x.nome+' R$ '+x.preco.toFixed(2)+'<br>');
+    d.innerHTML+=`<div class="historicoPedido"><strong>DK HAMBURGUERIA</strong><br>${p.dataHora}<br><strong>Cliente: ${p.nomeCliente}</strong><br>Endereço: ${p.endereco}<br>Taxa de Entrega: R$ ${p.taxaEntrega.toFixed(2)}<br>${it}<strong>TOTAL: R$ ${p.total.toFixed(2)}</strong><br><button class="botao botaoVermelho" style="margin-top:8px;" onclick="excluirPedidoDoDia(${i})">🗑️ Excluir este pedido</button></div>`;
+  });
+}
+
+function excluirPedidoDoDia(i){
+  if(!confirm('⚠️ Tem certeza que deseja excluir este pedido?'))return;
+  historicoPedidos.splice(i,1);
+  salvarLocal('historicoPedidos',historicoPedidos);
+  carregarHistorico();
+  calcularTotalDoDia();
+}
+
+function imprimirPedido(){
+  const nc=document.getElementById('nomeCliente').value;
+  const ec=document.getElementById('enderecoCliente').value;
+  const tx=Number(document.getElementById('taxaEntrega').value)||0;
+  let t=0;
+  let txt='DK HAMBURGUERIA\\n-------------------------\\nCLIENTE: '+nc+'\\nENDEREÇO: '+ec+'\\nTAXA DE ENTREGA: R$ '+tx.toFixed(2)+'\\n-------------------------\\n';
+  itensPedidoAtual.forEach(x=>{txt+=x.nome+'  R$ '+x.preco.toFixed(2)+'\\n';t+=x.preco});
+  t+=tx;
+  txt+='-------------------------\\nTOTAL: R$ '+t.toFixed(2)+'\\n-------------------------\\n';
+  window.location.href='rawbt://print?text='+encodeURIComponent(txt);
+}
+
+function salvarEDownloadDia(){
+  calcularTotalDoDia();
+  const d=new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+  let r='DK HAMBURGUERIA - RELATÓRIO DE VENDAS\\nGerado em: '+new Date().toLocaleString('pt-BR')+'\\nQuantidade de pedidos: '+historicoPedidos.length+'\\n----------------------------------------\\n';
+  for(let i=0;i<historicoPedidos.length;i++){
+    const p=historicoPedidos[i];
+    r+='PEDIDO '+(i+1)+'\\nData/Hora: '+p.dataHora+'\\nCliente: '+p.nomeCliente+'\\nEndereço: '+p.endereco+'\\nTaxa de Entrega: R$ '+p.taxaEntrega.toFixed(2)+'\\nItens:\\n';
+    p.itens.forEach(x=>r+='  - '+x.nome+'  R$ '+x.preco.toFixed(2)+'\\n');
+    r+='TOTAL DO PEDIDO: R$ '+p.total.toFixed(2)+'\\n----------------------------------------\\n';
+  }
+  let g=0;
+  historicoPedidos.forEach(x=>g+=x.total);
+  r+='TOTAL GERAL DO DIA: R$ '+g.toFixed(2)+'\\n';
+  baixarArquivoTexto('todas_vendas_'+d+'.txt',r);
+  alert('💾 Relatório baixado com sucesso!');
+}
+
+function limparHistoricoDia(){
+  if(!confirm('⚠️ Primeiro faça o download do relatório! Tem certeza que deseja limpar tudo?'))return;
+  historicoPedidos=[];
+  salvarLocal('historicoPedidos',historicoPedidos);
+  carregarHistorico();
+  calcularTotalDoDia();
+  alert('🗑️ Histórico limpo! Pronto para o próximo dia!');
+}
+
+function cadastrarLanche(){
+  const n=document.getElementById('nomeLancheNovo').value.trim();
+  const v=Number(document.getElementById('precoLancheNovo').value);
+  if(!n||!v||v<=0){alert('⚠️ Preencha o nome e um preço válido!');return}
+  lanches.push({nome:n,preco:v});
+  salvarLocal('lanches',lanches);
+  document.getElementById('nomeLancheNovo').value='';
+  document.getElementById('precoLancheNovo').value='';
+  carregarLanchesPedido();
+  carregarListaCadastrados();
+  alert('✅ Lanche cadastrado!');
+}
+
+function carregarListaCadastrados(){
+  const d=document.getElementById('listaLanchesCadastrados');
+  d.innerHTML='';
+  lanches.forEach((l,i)=>{
+    d.innerHTML+=`<div class="item"><span>${l.nome} — R$ ${Number(l.preco).toFixed(2)}</span><button class="botao botaoVermelho" style="width:auto;padding:8px 12px;" onclick="excluirLanche(${i})">Excluir</button></div>`;
+  });
+}
+
+function excluirLanche(i){
+  lanches.splice(i,1);
+  salvarLocal('lanches',lanches);
+  carregarLanchesPedido();
+  carregarListaCadastrados();
+}
 </script>
 </body>
 </html>
