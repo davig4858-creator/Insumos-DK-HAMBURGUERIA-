@@ -293,7 +293,6 @@ function mudarAba(numero) {
   calcularTotalDoDia();
 }
 
-// ===== COMBOS =====
 function adicionarComboAoPedido() {
   const nomeCombo = document.getElementById('nomeCombo').value.trim();
   const valorCombo = Number(document.getElementById('valorCombo').value);
@@ -312,7 +311,6 @@ function adicionarComboAoPedido() {
   alert('✅ Combo adicionado ao pedido!');
 }
 
-// ===== LANCHES =====
 function carregarLanchesPedido() {
   const div = document.getElementById('listaLanchesPedido');
   div.innerHTML = '';
@@ -350,7 +348,6 @@ function removerUmDoPedido(nome) {
   }
 }
 
-// ===== ITENS DO PEDIDO =====
 function atualizarItensPedido() {
   const div = document.getElementById('itensDoPedido');
   div.innerHTML = '';
@@ -370,7 +367,6 @@ function removerItem(indice) {
   carregarLanchesPedido();
 }
 
-// ===== PEDIDOS =====
 function finalizarPedido() {
   const nomeCli = document.getElementById('nomeCliente').value.trim();
   const endCli = document.getElementById('enderecoCliente').value.trim();
@@ -521,26 +517,3 @@ function limparHistoricoDia() {
 function cadastrarLanche() {
   const nomeInput = document.getElementById('nomeLancheNovo');
   const precoInput = document.getElementById('precoLancheNovo');
-  const nome = nomeInput.value.trim();
-  const preco = Number(precoInput.value);
-
-  if (!nome || !preco || preco <= 0) {
-    alert('⚠️ Preencha o nome e um preço válido!');
-    return;
-  }
-
-  lanches.push({nome: nome, preco: preco});
-  salvarLocal('lanches', lanches);
-
-  nomeInput.value = '';
-  precoInput.value = '';
-
-  carregarLanchesPedido();
-  carregarListaCadastrados();
-  alert('✅ Lanche cadastrado!');
-}
-
-function carregarListaCadastrados() {
-  const div = document.getElementById('listaLanchesCadastrados');
-  div.innerHTML = '';
-  lanches.forEach((l
