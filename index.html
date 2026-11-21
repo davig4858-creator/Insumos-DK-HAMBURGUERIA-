@@ -87,6 +87,7 @@ input {
   font-weight: bold;
   margin: 7px 0;
   cursor: pointer;
+  font-size: 15px;
 }
 .botaoDourado {
   background: #D4AF37;
@@ -169,6 +170,15 @@ input {
   display: flex;
   align-items: center;
 }
+.aviso {
+  background: #2a1055;
+  border: 1px solid #7b2cbf;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 14px;
+  color: #e0c9ff;
+}
 </style>
 </head>
 <body>
@@ -183,9 +193,18 @@ input {
 
 <div class="conteudoAba visivel" id="aba0">
   <h2>Novo Pedido</h2>
+  
   <input type="text" id="nomeCliente" placeholder="Nome do cliente">
   <input type="text" id="enderecoCliente" placeholder="Endereço">
   <input type="number" id="taxaEntrega" step="0.01" placeholder="Taxa de Entrega R$">
+
+  <div class="aviso">
+    🎁 Combo do dia — digite o nome e o valor abaixo:
+  </div>
+  
+  <input type="text" id="nomeCombo" placeholder="Nome do Combo (ex: Combo Terça)">
+  <input type="number" id="valorCombo" step="0.01" placeholder="Valor R$">
+  <button class="botao botaoVerde" onclick="adicionarComboAoPedido()">➕ Adicionar Combo ao Pedido</button>
 
   <h3>🍔 Lanches disponíveis:</h3>
   <div id="listaLanchesPedido"></div>
@@ -274,6 +293,26 @@ function mudarAba(numero) {
   calcularTotalDoDia();
 }
 
+// ===== COMBOS =====
+function adicionarComboAoPedido() {
+  const nomeCombo = document.getElementById('nomeCombo').value.trim();
+  const valorCombo = Number(document.getElementById('valorCombo').value);
+
+  if (!nomeCombo || !valorCombo || valorCombo <= 0) {
+    alert('⚠️ Preencha o nome e o valor do combo corretamente!');
+    return;
+  }
+
+  itensPedidoAtual.push({ nome: '🎁 ' + nomeCombo, preco: valorCombo });
+  
+  document.getElementById('nomeCombo').value = '';
+  document.getElementById('valorCombo').value = '';
+  
+  atualizarItensPedido();
+  alert('✅ Combo adicionado ao pedido!');
+}
+
+// ===== LANCHES =====
 function carregarLanchesPedido() {
   const div = document.getElementById('listaLanchesPedido');
   div.innerHTML = '';
@@ -311,6 +350,7 @@ function removerUmDoPedido(nome) {
   }
 }
 
+// ===== ITENS DO PEDIDO =====
 function atualizarItensPedido() {
   const div = document.getElementById('itensDoPedido');
   div.innerHTML = '';
@@ -318,7 +358,7 @@ function atualizarItensPedido() {
     div.innerHTML += `
       <div class="item">
         <span>${item.nome} — R$ ${item.preco.toFixed(2)}</span>
-        <button class="botao botaoVermelho" onclick="removerItem(${i})">Remover</button>
+        <button class="botao botaoVermelho" style="width:auto;padding:8px 12px;" onclick="removerItem(${i})">Remover</button>
       </div>
     `;
   });
@@ -330,19 +370,20 @@ function removerItem(indice) {
   carregarLanchesPedido();
 }
 
+// ===== PEDIDOS =====
 function finalizarPedido() {
   const nomeCli = document.getElementById('nomeCliente').value.trim();
   const endCli = document.getElementById('enderecoCliente').value.trim();
   const taxaEntrega = Number(document.getElementById('taxaEntrega').value) || 0;
 
   if (!nomeCli || itensPedidoAtual.length === 0) {
-    alert('⚠️ Preencha o nome do cliente e adicione os lanches!');
+    alert('⚠️ Preencha o nome do cliente e adicione os itens!');
     return;
   }
 
-  let valorLanches = 0;
-  itensPedidoAtual.forEach(i => valorLanches += i.preco);
-  let valorPedido = valorLanches + taxaEntrega;
+  let valorTotal = 0;
+  itensPedidoAtual.forEach(i => valorTotal += i.preco);
+  valorTotal += taxaEntrega;
 
   const pedido = {
     dataHora: new Date().toLocaleString('pt-BR'),
@@ -350,7 +391,7 @@ function finalizarPedido() {
     endereco: endCli,
     taxaEntrega: taxaEntrega,
     itens: [...itensPedidoAtual],
-    total: valorPedido
+    total: valorTotal
   };
 
   historicoPedidos.push(pedido);
@@ -402,9 +443,7 @@ function carregarHistorico() {
 }
 
 function excluirPedidoDoDia(indice) {
-  if (!confirm('⚠️ Tem certeza que deseja excluir este pedido?')) {
-    return;
-  }
+  if (!confirm('⚠️ Tem certeza que deseja excluir este pedido?')) return;
   historicoPedidos.splice(indice, 1);
   salvarLocal('historicoPedidos', historicoPedidos);
   carregarHistorico();
@@ -424,20 +463,10 @@ function imprimirPedido() {
   texto += 'TAXA DE ENTREGA: R$ ' + taxaEntrega.toFixed(2) + '\n';
   texto += '-------------------------\n';
 
-  const agrupado = {};
   itensPedidoAtual.forEach(i => {
-    if(!agrupado[i.nome]) {
-      agrupado[i.nome] = { qtd: 0, valor: i.preco };
-    }
-    agrupado[i.nome].qtd++;
+    texto += i.nome + '  R$ ' + i.preco.toFixed(2) + '\n';
+    totalPedido += i.preco;
   });
-
-  for(const nomeItem in agrupado) {
-    const item = agrupado[nomeItem];
-    const subtotal = item.qtd * item.valor;
-    texto += item.qtd + 'x ' + nomeItem + '  R$ ' + subtotal.toFixed(2) + '\n';
-    totalPedido += subtotal;
-  }
 
   totalPedido += taxaEntrega;
   texto += '-------------------------\n';
@@ -481,9 +510,7 @@ function salvarEDownloadDia() {
 }
 
 function limparHistoricoDia() {
-  if (!confirm('⚠️ Primeiro faça o download do relatório! Tem certeza que deseja limpar tudo?')) {
-    return;
-  }
+  if (!confirm('⚠️ Primeiro faça o download do relatório! Tem certeza que deseja limpar tudo?')) return;
   historicoPedidos = [];
   salvarLocal('historicoPedidos', historicoPedidos);
   carregarHistorico();
@@ -516,22 +543,4 @@ function cadastrarLanche() {
 function carregarListaCadastrados() {
   const div = document.getElementById('listaLanchesCadastrados');
   div.innerHTML = '';
-  lanches.forEach((l,i) => {
-    div.innerHTML += `
-      <div class="item">
-        <span>${l.nome} — R$ ${Number(l.preco).toFixed(2)}</span>
-        <button class="botao botaoVermelho" onclick="excluirLanche(${i})">Excluir</button>
-      </div>
-    `;
-  });
-}
-
-function excluirLanche(i) {
-  lanches.splice(i, 1);
-  salvarLocal('lanches', lanches);
-  carregarLanchesPedido();
-  carregarListaCadastrados();
-}
-</script>
-</body>
-</html>
+  lanches.forEach((l
