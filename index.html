@@ -5,338 +5,611 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DK HAMBURGUERIA — Painel de Insumos</title>
 <style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif;}
-body {background:#080418;color:#fff;min-height:100vh;padding:12px;}
-.topo {text-align:center;padding:22px;border-radius:16px;border:2px solid #D4AF37;background:linear-gradient(135deg,#250650,#5a109b);box-shadow:0 0 18px #7b2cbf;margin-bottom:16px;}
-.topo h1 {color:#D4AF37;font-size:26px;text-shadow:0 0 6px #D4AF37;}
-.abas {display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.botaoAba {flex:1;min-width:120px;padding:12px;border:none;border-radius:10px 10px 0 0;font-weight:bold;background:#220b44;color:#fff;cursor:pointer;transition:0.2s;font-size:14px;}
-.botaoAba.ativa {background:#D4AF37;color:#000;box-shadow:0 0 10px #D4AF37;}
-.conteudoAba {display:none;background:#14072b;border:1px solid #7b2cbf;border-radius:0 14px 14px 14px;padding:16px;box-shadow:0 0 14px #3c1270;}
-.conteudoAba.visivel {display:block;}
-h2 {color:#D4AF37;margin-bottom:16px;font-size:20px;}
-h3 {margin:16px 0 8px;color:#e0c9ff;font-size:16px;}
-input, select {width:100%;padding:10px;border-radius:8px;border:1px solid #7b2cbf;background:#0b041b;color:#fff;margin:6px 0;font-size:15px;}
-.botao {width:100%;padding:12px;border:none;border-radius:9px;font-weight:bold;margin:6px 0;cursor:pointer;font-size:15px;transition:0.2s;}
-.botaoDourado {background:#D4AF37;color:#000;box-shadow:0 0 8px #D4AF37;}
-.botaoVerde {background:#2cc95b;color:#000;}
-.botaoVermelho {background:#e63946;color:#fff;}
-.botaoMenor {width:auto;padding:8px 12px;font-size:14px;margin:4px;}
-.card {background:#200d3f;border:1px solid #7b2cbf;border-radius:10px;padding:14px;margin:10px 0;}
-.destaque {background:#1f0b3b;border:2px solid #D4AF37;border-radius:12px;padding:16px;margin:12px 0;text-align:center;}
-.resultado {font-size:22px;font-weight:bold;color:#D4AF37;margin-top:8px;}
-.aviso {background:#2a1055;border:1px solid #7b2cbf;border-radius:8px;padding:10px;margin:10px 0;font-size:14px;color:#e0c9ff;}
-.item-lanche {background:#200d3f;border:1px solid #D4AF37;border-radius:8px;padding:12px;margin:6px 0;}
+:root {
+  --roxo-escuro: #0F0529;
+  --roxo-medio: #2A1063;
+  --roxo-claro: #4A2090;
+  --dourado: #D4AF37;
+  --dourado-claro: #F0D76C;
+  --branco: #FFFFFF;
+  --cinza-claro: #B8B5C8;
+  --verde: #2CC95B;
+  --vermelho: #E63946;
+  --amarelo: #FFC107;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, var(--roxo-escuro) 0%, #1A0A3E 100%);
+  color: var(--branco);
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cabecalho {
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: 16px;
+  border: 2px solid var(--dourado);
+  background: linear-gradient(135deg, rgba(42,16,99,0.8), rgba(26,10,62,0.9));
+  box-shadow: 0 0 25px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+  margin-bottom: 24px;
+}
+
+.cabecalho h1 {
+  color: var(--dourado);
+  font-size: 28px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.cabecalho p {
+  color: var(--cinza-claro);
+  font-size: 14px;
+}
+
+.navegacao {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  flex: 1;
+  min-width: 130px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  font-weight: 600;
+  background: rgba(42,16,99,0.5);
+  color: var(--cinza-claro);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-btn.ativa {
+  background: var(--dourado);
+  color: #000;
+  border-bottom: 2px solid var(--dourado-claro);
+  box-shadow: 0 -2px 8px rgba(212,175,55,0.2);
+}
+
+.nav-btn:hover:not(.ativa) {
+  background: rgba(74,32,144,0.4);
+  color: var(--branco);
+}
+
+.painel {
+  display: none;
+  background: rgba(26,10,62,0.6);
+  border: 1px solid rgba(74,32,144,0.5);
+  border-radius: 0 0 14px 14px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.painel.visivel {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+  color: var(--dourado-claro);
+  font-size: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(74,32,144,0.3);
+}
+
+h3 {
+  color: var(--branco);
+  font-size: 15px;
+  margin: 20px 0 10px;
+  opacity: 0.9;
+}
+
+.grupo-input {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: var(--cinza-claro);
+  margin-bottom: 6px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(74,32,144,0.6);
+  background: rgba(15,5,41,0.6);
+  color: var(--branco);
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--dourado);
+}
+
+.linha-dupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .linha-dupla { grid-template-columns: 1fr; }
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.btn-dourado {
+  background: linear-gradient(135deg, var(--dourado), #B8962E);
+  color: #000;
+  width: 100%;
+}
+
+.btn-dourado:hover {
+  background: linear-gradient(135deg, var(--dourado-claro), var(--dourado));
+  transform: translateY(-1px);
+}
+
+.btn-verde {
+  background: var(--verde);
+  color: #000;
+}
+
+.btn-verde:hover {
+  background: #26B850;
+}
+
+.btn-vermelho {
+  background: var(--vermelho);
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 13px;
+  width: auto;
+}
+
+.btn-vermelho:hover {
+  background: #C92D3C;
+}
+
+.btn-menor {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.card-destaque {
+  background: linear-gradient(135deg, rgba(42,16,99,0.6), rgba(74,32,144,0.3));
+  border: 2px solid var(--dourado);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.resultado-grande {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--dourado-claro);
+  margin: 12px 0 4px;
+}
+
+.resultado-info {
+  font-size: 14px;
+  color: var(--cinza-claro);
+}
+
+.lista-item {
+  background: rgba(42,16,99,0.4);
+  border: 1px solid rgba(74,32,144,0.4);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lista-item:hover {
+  border-color: rgba(212,175,55,0.3);
+}
+
+.item-dados h4 {
+  font-size: 15px;
+  color: var(--dourado-claro);
+  margin-bottom: 4px;
+}
+
+.item-dados p {
+  font-size: 13px;
+  color: var(--cinza-claro);
+  line-height: 1.5;
+}
+
+.linha-insumo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.linha-insumo select, .linha-insumo input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.lanche-card {
+  background: rgba(42,16,99,0.4);
+  border: 1px solid rgba(74,32,144,0.4);
+  border-radius: 10px;
+  padding: 18px;
+  margin: 12px 0;
+}
+
+.lanche-nome {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--dourado-claro);
+  margin-bottom: 10px;
+}
+
+.lanche-ingredientes {
+  font-size: 13px;
+  color: var(--cinza-claro);
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.lanche-valores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  .lanche-valores { grid-template-columns: 1fr; }
+}
+
+.valor-box {
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.2);
+}
+
+.valor-label {
+  font-size: 12px;
+  color: var(--cinza-claro);
+}
+
+.valor-val {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.custo { color: #8AB4F8; }
+.venda { color: var(--verde); }
+.lucro-baixo { color: var(--vermelho); }
+.lucro-medio { color: var(--amarelo); }
+.lucro-alto { color: var(--verde); }
+
+.resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.resumo-card {
+  background: rgba(42,16,99,0.4);
+  border: 1px solid rgba(74,32,144,0.4);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.resumo-card h4 {
+  font-size: 13px;
+  color: var(--cinza-claro);
+  margin-bottom: 8px;
+}
+
+.resumo-card .valor {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--dourado-claro);
+}
+
+.aviso {
+  background: rgba(74,32,144,0.2);
+  border-left: 3px solid var(--dourado);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 16px 0;
+  font-size: 13px;
+  color: #D0C8E8;
+  line-height: 1.6;
+}
+
+.vazio {
+  text-align: center;
+  padding: 30px;
+  color: var(--cinza-claro);
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(74,32,144,0.3);
+  margin: 14px 0;
+}
 </style>
 </head>
 <body>
-<div class="topo"><h1>📦 DK — Cálculo de Insumos</h1></div>
-
-<div class="abas">
-<button class="botaoAba ativa" onclick="mudarAba(0)">🥩 Carne</button>
-<button class="botaoAba" onclick="mudarAba(1)">📋 Outros Insumos</button>
-<button class="botaoAba" onclick="mudarAba(2)">🍔 Lanches</button>
-</div>
-
-<!-- ABA 0: CÁLCULO DA CARNE -->
-<div class="conteudoAba visivel" id="aba0">
-<h2>🥩 Cálculo do Hambúrguer</h2>
-
-<div class="destaque">
-  <h3>Preço do Quilo da Carne</h3>
-  <input type="number" id="precoKgCarne" step="0.01" placeholder="Ex: 35.00" oninput="calcularCarne()">
-  
-  <h3>Gramas por Hambúrguer</h3>
-  <input type="number" id="gramasPorHamburguer" step="1" placeholder="Ex: 85" oninput="calcularCarne()">
-  
-  <div class="resultado">
-    Custo de 1 hambúrguer: R$ <span id="custoUmHamburguer">0.00</span>
+<div class="container">
+  <div class="cabecalho">
+    <h1>🍔 DK HAMBURGUERIA</h1>
+    <p>Painel de Controle de Insumos e Custos</p>
   </div>
-  <div style="margin-top:8px;opacity:0.8;">
-    Com 1kg você faz aproximadamente: <strong id="quantosPorKg">0</strong> hambúrgueres
+
+  <div class="navegacao">
+    <button class="nav-btn ativa" onclick="abrirAba(0)">🥩 Carne</button>
+    <button class="nav-btn" onclick="abrirAba(1)">📦 Insumos</button>
+    <button class="nav-btn" onclick="abrirAba(2)">🍔 Lanches</button>
+    <button class="nav-btn" onclick="abrirAba(3)">📊 Resumo</button>
   </div>
-</div>
 
-<button class="botao botaoVerde" onclick="salvarCarneNosInsumos()">💾 Salvar Carne nos Insumos</button>
+  <!-- ABA 0: CÁLCULO DA CARNE -->
+  <div class="painel visivel" id="aba0">
+    <h2>🥩 Cálculo do Hambúrguer</h2>
+    
+    <div class="linha-dupla">
+      <div class="grupo-input">
+        <label>Preço do Quilo da Carne (R$)</label>
+        <input type="number" id="precoKgCarne" step="0.01" placeholder="35.00" oninput="calcularCarne()">
+      </div>
+      <div class="grupo-input">
+        <label>Gramas por Hambúrguer</label>
+        <input type="number" id="gramasPorHamburguer" step="1" placeholder="85" oninput="calcularCarne()">
+      </div>
+    </div>
 
-<div class="aviso">
-💡 Como funciona:<br>
-- Digita quanto pagou por 1kg de carne<br>
-- Digita quantas gramas vai em cada hambúrguer<br>
-- Ele mostra automaticamente quanto custa SÓ a carne de cada lanche! ✅
-</div>
-</div>
+    <div class="card-destaque">
+      <div style="font-size:14px; color:var(--cinza-claro);">Custo de 1 hambúrguer (só a carne)</div>
+      <div class="resultado-grande">R$ <span id="custoHamburguer">0,00</span></div>
+      <div class="resultado-info">Com 1kg você faz aproximadamente <strong id="quantidadePorKg">0</strong> hambúrgueres</div>
+    </div>
 
-<!-- ABA 1: OUTROS INSUMOS -->
-<div class="conteudoAba" id="aba1">
-<h2>📋 Cadastrar Outros Insumos</h2>
-<input type="text" id="nomeInsumo" placeholder="Nome do insumo (ex: Pão)">
-<select id="unidade">
-<option value="kg">Quilograma (kg)</option>
-<option value="g">Grama (g)</option>
-<option value="un">Unidade (un)</option>
-<option value="l">Litro (L)</option>
-<option value="ml">Mililitro (mL)</option>
-<option value="cx">Caixa</option>
-<option value="pc">Pacote</option>
-</select>
-<input type="number" id="quantidade" step="0.001" placeholder="Quantidade comprada">
-<input type="number" id="valorPago" step="0.01" placeholder="Valor pago R$">
-<button class="botao botaoDourado" onclick="cadastrarInsumo()">➕ Cadastrar Insumo</button>
+    <button class="btn btn-verde" onclick="salvarCarne()">💾 Salvar Carne nos Insumos</button>
 
-<h3>📋 Insumos Cadastrados</h3>
-<div id="listaInsumos"></div>
-</div>
+    <div class="aviso">
+      💡 <strong>Como funciona:</strong><br>
+      Digite quanto pagou por 1kg de carne e quantas gramas vai em cada hambúrguer. O cálculo aparece automaticamente acima. Depois clique em Salvar para incluir nos insumos.
+    </div>
+  </div>
 
-<!-- ABA 2: LANCHES -->
-<div class="conteudoAba" id="aba2">
-<h2>🍔 Custo dos Lanches</h2>
-<input type="text" id="nomeLanche" placeholder="Nome do lanche">
-<input type="number" id="precoVenda" step="0.01" placeholder="Preço de venda R$">
+  <!-- ABA 1: INSUMOS -->
+  <div class="painel" id="aba1">
+    <h2>📦 Cadastrar Insumos</h2>
+    
+    <div class="linha-dupla">
+      <div class="grupo-input" style="grid-column: 1 / -1;">
+        <label>Nome do Insumo</label>
+        <input type="text" id="nomeInsumo" placeholder="Ex: Pão, Queijo, Molho...">
+      </div>
+    </div>
+    
+    <div class="linha-dupla">
+      <div class="grupo-input">
+        <label>Unidade de Medida</label>
+        <select id="unidade">
+          <option value="kg">Quilograma (kg)</option>
+          <option value="g">Grama (g)</option>
+          <option value="un">Unidade (un)</option>
+          <option value="l">Litro (L)</option>
+          <option value="ml">Mililitro (mL)</option>
+          <option value="cx">Caixa</option>
+          <option value="pc">Pacote</option>
+        </select>
+      </div>
+      <div class="grupo-input">
+        <label>Quantidade Comprada</label>
+        <input type="number" id="quantidade" step="0.001" placeholder="Ex: 10">
+      </div>
+    </div>
+    
+    <div class="grupo-input">
+      <label>Valor Pago (R$)</label>
+      <input type="number" id="valorPago" step="0.01" placeholder="Ex: 17.30">
+    </div>
+    
+    <button class="btn btn-dourado" onclick="cadastrarInsumo()">➕ Cadastrar Insumo</button>
 
-<h3>🧪 Quanto usa de cada insumo:</h3>
-<div id="selecaoInsumos"></div>
-<button class="botao botaoVerde" style="margin-top:10px;" onclick="adicionarLinha()">➕ Adicionar insumo</button>
+    <h3>📋 Insumos Cadastrados</h3>
+    <div id="listaInsumos">
+      <div class="vazio">Nenhum insumo cadastrado ainda.</div>
+    </div>
+  </div>
 
-<button class="botao botaoDourado" style="margin-top:16px;" onclick="calcularLanche()">💾 Calcular & Salvar</button>
+  <!-- ABA 2: LANCHES -->
+  <div class="painel" id="aba2">
+    <h2>🍔 Cadastrar Lanche</h2>
+    
+    <div class="linha-dupla">
+      <div class="grupo-input">
+        <label>Nome do Lanche</label>
+        <input type="text" id="nomeLanche" placeholder="Ex: DK JR">
+      </div>
+      <div class="grupo-input">
+        <label>Preço de Venda (R$)</label>
+        <input type="number" id="precoVenda" step="0.01" placeholder="17.99">
+      </div>
+    </div>
 
-<h3>📋 Lanches Cadastrados</h3>
-<div id="listaLanches"></div>
+    <h3>🧪 Ingredientes usados neste lanche</h3>
+    <div id="selecaoInsumos"></div>
+    <button class="btn btn-verde btn-menor" style="margin:8px 0 16px;" onclick="adicionarLinhaInsumo()">➕ Adicionar Ingrediente</button>
+
+    <button class="btn btn-dourado" onclick="calcularESalvarLanche()">💾 Calcular e Salvar Lanche</button>
+
+    <h3>📋 Lanches Cadastrados</h3>
+    <div id="listaLanches">
+      <div class="vazio">Nenhum lanche cadastrado ainda.</div>
+    </div>
+  </div>
+
+  <!-- ABA 3: RESUMO -->
+  <div class="painel" id="aba3">
+    <h2>📊 Resumo de Custos</h2>
+    
+    <div class="aviso">
+      💡 Sempre que atualizar o preço de um insumo, recalcula o lanche para ver o novo custo!
+    </div>
+
+    <div id="conteudoResumo">
+      <div class="vazio">Cadastre lanches para ver o resumo.</div>
+    </div>
+  </div>
 </div>
 
 <script>
-let abaAtual=0;
-let insumos=[];
-let lanches=[];
-let linhas=[{id:Date.now()}];
+let abaAtual = 0;
+let insumos = [];
+let lanches = [];
+let linhasInsumo = [{ id: Date.now() }];
 
-function salvarLocal(c,v){try{localStorage.setItem(c,JSON.stringify(v));return true}catch(e){return false}}
-function carregarLocal(c){try{const d=localStorage.getItem(c);return d?JSON.parse(d):[]}catch(e){return []}}
-
-document.addEventListener('DOMContentLoaded',function(){
-  insumos=carregarLocal('insumos');
-  lanches=carregarLocal('lanches');
-  const carne=insumos.find(i=>i.nome==='Carne Moída');
-  if(carne){
-    document.getElementById('precoKgCarne').value=(carne.valorPago/carne.quantidade).toFixed(2);
-  }
-  mudarAba(0);
-});
-
-function mudarAba(n){
-  abaAtual=n;
-  document.querySelectorAll('.conteudoAba').forEach((e,i)=>e.classList.toggle('visivel',i===n));
-  document.querySelectorAll('.botaoAba').forEach((e,i)=>e.classList.toggle('ativa',i===n));
-  if(n===1) carregarListaInsumos();
-  if(n===2){carregarSelecaoInsumos();carregarListaLanches();}
+// Salvar e carregar dados
+function salvar(chave, valor) {
+  try { localStorage.setItem(chave, JSON.stringify(valor)); return true; }
+  catch (e) { return false; }
 }
 
-// === ABA 0: CÁLCULO DA CARNE ===
-function calcularCarne(){
-  const precoKg=Number(document.getElementById('precoKgCarne').value);
-  const gramas=Number(document.getElementById('gramasPorHamburguer').value);
+function carregar(chave) {
+  try {
+    const dados = localStorage.getItem(chave);
+    return dados ? JSON.parse(dados) : [];
+  } catch (e) { return []; }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  insumos = carregar('insumosDK');
+  lanches = carregar('lanchesDK');
   
-  if(!precoKg||!gramas||gramas<=0){
-    document.getElementById('custoUmHamburguer').textContent='0.00';
-    document.getElementById('quantosPorKg').textContent='0';
+  // Carregar dados da carne se existir
+  const carne = insumos.find(i => i.nome === 'Carne Moída');
+  if (carne) {
+    document.getElementById('precoKgCarne').value = (carne.valorPago / carne.quantidade).toFixed(2);
+    if (carne.gramasPorHamburguer) {
+      document.getElementById('gramasPorHamburguer').value = carne.gramasPorHamburguer;
+      calcularCarne();
+    }
+  }
+  
+  abrirAba(0);
+});
+
+// Navegação entre abas
+function abrirAba(n) {
+  abaAtual = n;
+  document.querySelectorAll('.painel').forEach((p, i) => p.classList.toggle('visivel', i === n));
+  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('ativa', i === n));
+  
+  if (n === 1) carregarListaInsumos();
+  if (n === 2) { carregarSelecaoInsumos(); carregarListaLanches(); }
+  if (n === 3) carregarResumo();
+}
+
+// ===== ABA 0: CÁLCULO DA CARNE =====
+function calcularCarne() {
+  const precoKg = Number(document.getElementById('precoKgCarne').value);
+  const gramas = Number(document.getElementById('gramasPorHamburguer').value);
+  
+  if (!precoKg || !gramas || gramas <= 0) {
+    document.getElementById('custoHamburguer').textContent = '0,00';
+    document.getElementById('quantidadePorKg').textContent = '0';
     return;
   }
   
-  const custoGrama=precoKg/1000;
-  const custoHamburguer=custoGrama*gramas;
-  const quantidadePorKg=Math.floor(1000/gramas);
+  const custoPorGrama = precoKg / 1000;
+  const custo = custoPorGrama * gramas;
+  const qtdPorKg = Math.floor(1000 / gramas);
   
-  document.getElementById('custoUmHamburguer').textContent=custoHamburguer.toFixed(2);
-  document.getElementById('quantosPorKg').textContent=quantidadePorKg;
+  document.getElementById('custoHamburguer').textContent = custo.toFixed(2).replace('.', ',');
+  document.getElementById('quantidadePorKg').textContent = qtdPorKg;
 }
 
-function salvarCarneNosInsumos(){
-  const precoKg=Number(document.getElementById('precoKgCarne').value);
-  const gramas=Number(document.getElementById('gramasPorHamburguer').value);
+function salvarCarne() {
+  const precoKg = Number(document.getElementById('precoKgCarne').value);
+  const gramas = Number(document.getElementById('gramasPorHamburguer').value);
   
-  if(!precoKg||!gramas){alert('⚠️ Preencha o preço do kg e as gramas!');return;}
-  
-  const custoGrama=precoKg/1000;
-  const custoPorcao=custoGrama*gramas;
-  
-  const indice=insumos.findIndex(i=>i.nome==='Carne Moída');
-  if(indice!==-1){
-    insumos[indice].quantidade=1000;
-    insumos[indice].valorPago=precoKg;
-    insumos[indice].custoUnitario=custoGrama;
-    insumos[indice].gramasPorHamburguer=gramas;
-    insumos[indice].custoPorcao=custoPorcao;
-  }else{
-    insumos.push({
-      id:Date.now(),
-      nome:'Carne Moída',
-      unidade:'g',
-      quantidade:1000,
-      valorPago:precoKg,
-      custoUnitario:custoGrama,
-      gramasPorHamburguer:gramas,
-      custoPorcao:custoPorcao
-    });
+  if (!precoKg || !gramas) {
+    alert('⚠️ Preencha o preço do quilo e as gramas do hambúrguer!');
+    return;
   }
   
-  salvarLocal('insumos',insumos);
-  alert('✅ Carne salva nos insumos!\n\n1kg = R$ '+precoKg.toFixed(2)+'\n'+gramas+'g por hambúrguer\nCusto por lanche = R$ '+custoPorcao.toFixed(2));
+  const custoPorGrama = precoKg / 1000;
+  const custoHamburguer = custoPorGrama * gramas;
+  
+  // Verificar se já existe
+  const indice = insumos.findIndex(i => i.nome === 'Carne Moída');
+  
+  const dadosCarne = {
+    id: Date.now(),
+    nome: 'Carne Moída',
+    unidade: 'g',
+    quantidade: 1000,
+    valorPago: precoKg,
+    custoUnitario: custoPorGrama,
+    gramasPorHamburguer: gramas,
+    custoPorHamburguer: custoHamburguer
+  };
+  
+  if (indice !== -1) {
+    insumos[indice] = dadosCarne;
+  } else {
+    insumos.push(dadosCarne);
+  }
+  
+  salvar('insumosDK', insumos);
+  alert('✅ Carne salva com sucesso!\n\n1kg = R$ ' + precoKg.toFixed(2) + '\n' + gramas + 'g por hambúrguer\nCusto unitário = R$ ' + custoHamburguer.toFixed(2));
 }
 
-// === ABA 1: OUTROS INSUMOS ===
-function cadastrarInsumo(){
-  const nome=document.getElementById('nomeInsumo').value.trim();
-  const unidade=document.getElementById('unidade').value;
-  const qtd=Number(document.getElementById('quantidade').value);
-  const valor=Number(document.getElementById('valorPago').value);
-  
-  if(!nome||!qtd||!valor){alert('⚠️ Preencha todos os campos!');return;}
-  
-  insumos.push({
-    id:Date.now(),
-    nome:nome,
-    unidade:unidade,
-    quantidade:qtd,
-    valorPago:valor,
-    custoUnitario:valor/qtd
-  });
-  
-  salvarLocal('insumos',insumos);
-  document.getElementById('nomeInsumo').value='';
-  document.getElementById('quantidade').value='';
-  document.getElementById('valorPago').value='';
-  carregarListaInsumos();
-  alert('✅ Insumo cadastrado!');
-}
-
-function carregarListaInsumos(){
-  const d=document.getElementById('listaInsumos');
-  if(insumos.length===0){d.innerHTML='<p style="opacity:0.7;padding:10px;">Nenhum insumo cadastrado ainda.</p>';return;}
-  d.innerHTML='';
-  insumos.forEach((ins,i)=>{
-    let infoExtra='';
-    if(ins.nome==='Carne Moída'&&ins.gramasPorHamburguer){
-      infoExtra=`<br>🍔 ${ins.gramasPorHamburguer}g = R$ ${ins.custoPorcao.toFixed(2)}`;
-    }
-    d.innerHTML+=`
-      <div class="item-lanche">
-        <strong>${ins.nome}</strong><br>
-        ${ins.quantidade} ${ins.unidade} — R$ ${ins.valorPago.toFixed(2)}<br>
-        Custo: R$ ${ins.custoUnitario.toFixed(4)} / ${ins.unidade}${infoExtra}
-        <button class="botao botaoMenor botaoVermelho" style="float:right;margin-top:-4px;" onclick="excluirInsumo(${i})">🗑️</button>
-      </div>
-    `;
-  });
-}
-
-function excluirInsumo(i){
-  if(!confirm('Excluir este insumo?'))return;
-  insumos.splice(i,1);
-  salvarLocal('insumos',insumos);
-  carregarListaInsumos();
-}
-
-// === ABA 2: LANCHES ===
-function carregarSelecaoInsumos(){
-  const d=document.getElementById('selecaoInsumos');
-  if(insumos.length===0){d.innerHTML='<p style="opacity:0.7;">⚠️ Cadastre insumos primeiro!</p>';return;}
-  d.innerHTML='';
-  linhas.forEach(l=>{
-    d.innerHTML+=`
-      <div class="linha-insumo" id="linha-${l.id}" style="display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;">
-        <select data-id="${l.id}" class="selInsumo" style="flex:1;min-width:150px;margin:0;">
-          <option value="">Selecione o insumo</option>
-          ${insumos.map(ins=>`<option value="${ins.id}">${ins.nome}</option>`).join('')}
-        </select>
-        <input type="number" data-id="${l.id}" class="qtdUso" step="0.001" placeholder="Qtd usada" style="width:120px;margin:0;">
-        <button class="botao botaoMenor botaoVermelho" style="width:40px;" onclick="removerLinha(${l.id})">✕</button>
-      </div>
-    `;
-  });
-}
-
-function adicionarLinha(){
-  linhas.push({id:Date.now()});
-  carregarSelecaoInsumos();
-}
-
-function removerLinha(id){
-  linhas=linhas.filter(l=>l.id!==id);
-  if(linhas.length===0)linhas=[{id:Date.now()}];
-  carregarSelecaoInsumos();
-}
-
-function calcularLanche(){
-  const nome=document.getElementById('nomeLanche').value.trim();
-  const precoVenda=Number(document.getElementById('precoVenda').value);
-  
-  if(!nome||!precoVenda){alert('⚠️ Digite nome e preço de venda!');return;}
-  
-  const usos=[];
-  document.querySelectorAll('.linha-insumo').forEach(linha=>{
-    const id=Number(linha.querySelector('.selInsumo').value);
-    const qtd=Number(linha.querySelector('.qtdUso').value);
-    if(id&&qtd>0){
-      const insumo=insumos.find(i=>i.id===id);
-      let custoItem=0;
-      if(insumo.nome==='Carne Moída'&&insumo.custoPorcao){
-        custoItem=insumo.custoPorcao;
-      }else{
-        custoItem=qtd*insumo.custoUnitario;
-      }
-      usos.push({
-        nome:insumo.nome,
-        quantidadeUsada:qtd,
-        unidade:insumo.unidade,
-        custo:custoItem
-      });
-    }
-  });
-  
-  if(usos.length===0){alert('⚠️ Selecione os insumos!');return;}
-  
-  const custoTotal=usos.reduce((s,u)=>s+u.custo,0);
-  const lucro=precoVenda-custoTotal;
-  const margem=precoVenda>0 ? (lucro/precoVenda*100) : 0;
-  
-  lanches.push({id:Date.now(),nome,precoVenda,usos,custoTotal,lucro,margem});
-  salvarLocal('lanches',lanches);
-  
-  document.getElementById('nomeLanche').value='';
-  document.getElementById('precoVenda').value='';
-  linhas=[{id:Date.now()}];
-  
-  carregarSelecaoInsumos();
-  carregarListaLanches();
-  
-  alert('✅ '+nome+'\nCusto: R$ '+custoTotal.toFixed(2)+'\nVenda: R$ '+precoVenda.toFixed(2)+'\nLucro: R$ '+lucro.toFixed(2)+' ('+margem.toFixed(1)+'%)');
-}
-
-function carregarListaLanches(){
-  const d=document.getElementById('listaLanches');
-  if(lanches.length===0){d.innerHTML='<p style="opacity:0.7;padding:10px;">Nenhum lanche cadastrado ainda.</p>';return;}
-  d.innerHTML='';
-  lanches.forEach((l,i)=>{
-    d.innerHTML+=`
-      <div class="item-lanche">
-        <h4 style="font-size:16px;color:#D4AF37;margin-bottom:8px;">${l.nome}</h4>
-        ${l.usos.map(u=>`• ${u.nome}: R$ ${u.custo.toFixed(2)}`).join('<br>')}
-        <hr style="border:none;border-top:1px solid #7b2cbf;margin:8px 0;">
-        <strong>Custo: R$ ${l.custoTotal.toFixed(2)}</strong> |
-        <strong>Venda: R$ ${l.precoVenda.toFixed(2)}</strong><br>
-        <strong>Lucro: R$ ${l.lucro.toFixed(2)} (${l.margem.toFixed(1)}%)</strong>
-        <button class="botao botaoMenor botaoVermelho" style="float:right;margin-top:-24px;" onclick="excluirLanche(${i})">🗑️</button>
-      </div>
-    `;
-  });
-}
-
-function excluirLanche(i){
-  if(!confirm('Excluir este lanche?'))return;
-  lanches.splice(i,1);
-  salvarLocal('lanches',lanches);
-  carregarListaLanches();
-}
-</script>
-</body>
-</html>
+// ===== ABA 1: INSUMOS =====
+function cadastrarInsumo() {
+  const nome
