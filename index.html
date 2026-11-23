@@ -211,27 +211,6 @@ input:focus, select:focus {
   font-size: 14px;
 }
 
-.card-destaque {
-  background: linear-gradient(135deg, rgba(42,16,99,0.6), rgba(74,32,144,0.3));
-  border: 2px solid var(--dourado);
-  border-radius: 12px;
-  padding: 24px;
-  text-align: center;
-  margin: 20px 0;
-}
-
-.resultado-grande {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--dourado-claro);
-  margin: 12px 0 4px;
-}
-
-.resultado-info {
-  font-size: 14px;
-  color: var(--cinza-claro);
-}
-
 .lista-item {
   background: rgba(42,16,99,0.4);
   border: 1px solid rgba(74,32,144,0.4);
@@ -258,7 +237,7 @@ input:focus, select:focus {
 .item-dados p {
   font-size: 13px;
   color: var(--cinza-claro);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .linha-insumo {
@@ -379,6 +358,19 @@ hr {
   border-top: 1px solid rgba(74,32,144,0.3);
   margin: 14px 0;
 }
+
+.botao-acoes {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.categoria {
+  font-size: 12px;
+  color: var(--dourado);
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
 </style>
 </head>
 <body>
@@ -389,53 +381,32 @@ hr {
   </div>
 
   <div class="navegacao">
-    <button class="nav-btn ativa" onclick="abrirAba(0)">🥩 Carne</button>
-    <button class="nav-btn" onclick="abrirAba(1)">📦 Insumos</button>
-    <button class="nav-btn" onclick="abrirAba(2)">🍔 Lanches</button>
-    <button class="nav-btn" onclick="abrirAba(3)">📊 Resumo</button>
+    <button class="nav-btn ativa" onclick="abrirAba(0)">📦 Insumos</button>
+    <button class="nav-btn" onclick="abrirAba(1)">🍔 Lanches</button>
+    <button class="nav-btn" onclick="abrirAba(2)">📊 Resumo</button>
   </div>
 
-  <!-- ABA 0: CÁLCULO DA CARNE -->
+  <!-- ABA 0: INSUMOS -->
   <div class="painel visivel" id="aba0">
-    <h2>🥩 Cálculo do Hambúrguer</h2>
-    
-    <div class="linha-dupla">
-      <div class="grupo-input">
-        <label>Preço do Quilo da Carne (R$)</label>
-        <input type="number" id="precoKgCarne" step="0.01" placeholder="35.00" oninput="calcularCarne()">
-      </div>
-      <div class="grupo-input">
-        <label>Gramas por Hambúrguer</label>
-        <input type="number" id="gramasPorHamburguer" step="1" placeholder="85" oninput="calcularCarne()">
-      </div>
-    </div>
-
-    <div class="card-destaque">
-      <div style="font-size:14px; color:var(--cinza-claro);">Custo de 1 hambúrguer (só a carne)</div>
-      <div class="resultado-grande">R$ <span id="custoHamburguer">0,00</span></div>
-      <div class="resultado-info">Com 1kg você faz aproximadamente <strong id="quantidadePorKg">0</strong> hambúrgueres</div>
-    </div>
-
-    <button class="btn btn-verde" onclick="salvarCarne()">💾 Salvar Carne nos Insumos</button>
-
-    <div class="aviso">
-      💡 <strong>Como funciona:</strong><br>
-      Digite quanto pagou por 1kg de carne e quantas gramas vai em cada hambúrguer. O cálculo aparece automaticamente acima. Depois clique em Salvar para incluir nos insumos.
-    </div>
-  </div>
-
-  <!-- ABA 1: INSUMOS -->
-  <div class="painel" id="aba1">
-    <h2>📦 Cadastrar Insumos</h2>
+    <h2>📦 Cadastrar Insumo</h2>
     
     <div class="linha-dupla">
       <div class="grupo-input" style="grid-column: 1 / -1;">
         <label>Nome do Insumo</label>
-        <input type="text" id="nomeInsumo" placeholder="Ex: Pão, Queijo, Molho...">
+        <input type="text" id="nomeInsumo" placeholder="Ex: Pão, Carne, Queijo...">
       </div>
     </div>
     
     <div class="linha-dupla">
+      <div class="grupo-input">
+        <label>Categoria</label>
+        <select id="categoria">
+          <option value="Ingrediente">Ingrediente</option>
+          <option value="Molho">Molho</option>
+          <option value="Embalagem">Embalagem</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
       <div class="grupo-input">
         <label>Unidade de Medida</label>
         <select id="unidade">
@@ -446,29 +417,35 @@ hr {
           <option value="ml">Mililitro (mL)</option>
           <option value="cx">Caixa</option>
           <option value="pc">Pacote</option>
+          <option value="pct">Pct / Sachê</option>
         </select>
       </div>
+    </div>
+    
+    <div class="linha-dupla">
       <div class="grupo-input">
         <label>Quantidade Comprada</label>
-        <input type="number" id="quantidade" step="0.001" placeholder="Ex: 10">
+        <input type="number" id="quantidade" step="0.001" placeholder="Ex: 1">
+      </div>
+      <div class="grupo-input">
+        <label>Valor Pago (R$)</label>
+        <input type="number" id="valorPago" step="0.01" placeholder="Ex: 35.00">
       </div>
     </div>
     
     <div class="grupo-input">
-      <label>Valor Pago (R$)</label>
-      <input type="number" id="valorPago" step="0.01" placeholder="Ex: 17.30">
+      <label>Porção usada (opcional) — ex: 20ml, 85g, 1 un</label>
+      <input type="text" id="porcao" placeholder="Ex: 20ml">
     </div>
     
     <button class="btn btn-dourado" onclick="cadastrarInsumo()">➕ Cadastrar Insumo</button>
 
     <h3>📋 Insumos Cadastrados</h3>
-    <div id="listaInsumos">
-      <div class="vazio">Nenhum insumo cadastrado ainda.</div>
-    </div>
+    <div id="listaInsumos"></div>
   </div>
 
-  <!-- ABA 2: LANCHES -->
-  <div class="painel" id="aba2">
+  <!-- ABA 1: LANCHES -->
+  <div class="painel" id="aba1">
     <h2>🍔 Cadastrar Lanche</h2>
     
     <div class="linha-dupla">
@@ -482,24 +459,22 @@ hr {
       </div>
     </div>
 
-    <h3>🧪 Ingredientes usados neste lanche</h3>
+    <h3>🧪 Ingredientes usados</h3>
     <div id="selecaoInsumos"></div>
     <button class="btn btn-verde btn-menor" style="margin:8px 0 16px;" onclick="adicionarLinhaInsumo()">➕ Adicionar Ingrediente</button>
 
     <button class="btn btn-dourado" onclick="calcularESalvarLanche()">💾 Calcular e Salvar Lanche</button>
 
     <h3>📋 Lanches Cadastrados</h3>
-    <div id="listaLanches">
-      <div class="vazio">Nenhum lanche cadastrado ainda.</div>
-    </div>
+    <div id="listaLanches"></div>
   </div>
 
-  <!-- ABA 3: RESUMO -->
-  <div class="painel" id="aba3">
+  <!-- ABA 2: RESUMO -->
+  <div class="painel" id="aba2">
     <h2>📊 Resumo de Custos</h2>
     
     <div class="aviso">
-      💡 Sempre que atualizar o preço de um insumo, recalcula o lanche para ver o novo custo!
+      💡 Sempre que atualizar o preço de um insumo, os lanches que usam ele terão o custo recalculado automaticamente quando você os salvar novamente!
     </div>
 
     <div id="conteudoResumo">
@@ -527,89 +502,53 @@ function carregar(chave) {
   } catch (e) { return []; }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  insumos = carregar('insumosDK');
-  lanches = carregar('lanchesDK');
-  
-  // Carregar dados da carne se existir
-  const carne = insumos.find(i => i.nome === 'Carne Moída');
-  if (carne) {
-    document.getElementById('precoKgCarne').value = (carne.valorPago / carne.quantidade).toFixed(2);
-    if (carne.gramasPorHamburguer) {
-      document.getElementById('gramasPorHamburguer').value = carne.gramasPorHamburguer;
-      calcularCarne();
-    }
-  }
-  
-  abrirAba(0);
-});
-
-// Navegação entre abas
-function abrirAba(n) {
-  abaAtual = n;
-  document.querySelectorAll('.painel').forEach((p, i) => p.classList.toggle('visivel', i === n));
-  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('ativa', i === n));
-  
-  if (n === 1) carregarListaInsumos();
-  if (n === 2) { carregarSelecaoInsumos(); carregarListaLanches(); }
-  if (n === 3) carregarResumo();
+// DADOS INICIAIS — já vem preenchido!
+function dadosIniciais() {
+  return [
+    // Ingredientes base
+    { id:1, nome:'Pão', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:1.73, custoUnitario:1.73, porcao:'1 un' },
+    { id:2, nome:'Carne', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:3.50, custoUnitario:3.50, porcao:'1 porção' },
+    { id:3, nome:'Molhos', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
+    { id:4, nome:'Manteiga', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
+    { id:5, nome:'Embalagem', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:1.00, custoUnitario:1.00, porcao:'1 un' },
+    { id:6, nome:'Cheddar', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
+    { id:7, nome:'Cebola Rocha', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
+    
+    // Maionese Verde
+    { id:8, nome:'Maionese Verde — Leite', categoria:'Molho', unidade:'L', quantidade:1, valorPago:3.00, custoUnitario:3.00 },
+    { id:9, nome:'Maionese Verde — Óleo', categoria:'Molho', unidade:'L', quantidade:1, valorPago:7.00, custoUnitario:7.00 },
+    { id:10, nome:'Maionese Verde — Alho', categoria:'Molho', unidade:'un', quantidade:1, valorPago:1.00, custoUnitario:1.00 },
+    { id:11, nome:'Maionese Verde — Cheiro Verde', categoria:'Molho', unidade:'pc', quantidade:1, valorPago:5.00, custoUnitario:5.00 },
+    { id:12, nome:'Maionese Verde 2,5L', categoria:'Molho', unidade:'L', quantidade:2.5, valorPago:17.00, custoUnitario:6.80, porcao:'20ml = R$0,14' },
+    { id:13, nome:'Porção Maionese Verde (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
+    
+    // Maionese de Bacon
+    { id:14, nome:'Maionese Bacon — Bacon', categoria:'Molho', unidade:'g', quantidade:100, valorPago:6.50, custoUnitario:0.065 },
+    { id:15, nome:'Maionese Bacon — Fumaça em pó', categoria:'Molho', unidade:'g', quantidade:1, valorPago:0.33, custoUnitario:0.33 },
+    { id:16, nome:'Maionese Bacon — Óleo', categoria:'Molho', unidade:'L', quantidade:1, valorPago:7.00, custoUnitario:7.00 },
+    { id:17, nome:'Maionese Bacon — Leite', categoria:'Molho', unidade:'L', quantidade:1, valorPago:3.00, custoUnitario:3.00 },
+    { id:18, nome:'Maionese de Bacon 2,5L', categoria:'Molho', unidade:'L', quantidade:2.5, valorPago:16.83, custoUnitario:6.73, porcao:'20ml = R$0,14' },
+    { id:19, nome:'Porção Maionese Bacon (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
+    
+    // Cheddar Cremoso
+    { id:20, nome:'Cheddar — Pacote', categoria:'Ingrediente', unidade:'pc', quantidade:1, valorPago:108.00, custoUnitario:108.00 },
+    { id:21, nome:'Cheddar — 1/4 pacote', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:27.00, custoUnitario:27.00 },
+    { id:22, nome:'Cheddar — Creme de Leite', categoria:'Ingrediente', unidade:'cx', quantidade:1, valorPago:10.00, custoUnitario:10.00 },
+    { id:23, nome:'Cheddar Cremoso — 3L', categoria:'Ingrediente', unidade:'L', quantidade:3, valorPago:38.00, custoUnitario:12.67, porcao:'20ml = R$0,30' },
+    { id:24, nome:'Porção Cheddar (20ml)', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'20ml' },
+    
+    // Embalagens
+    { id:25, nome:'Embalagem Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.80, custoUnitario:0.80 },
+    { id:26, nome:'Saco Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.20, custoUnitario:0.20 },
+    { id:27, nome:'Embalagem simples', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.10, custoUnitario:0.10 },
+    
+    // Batatas
+    { id:28, nome:'Batata (lote 1)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:20.00, custoUnitario:20.00 },
+    { id:29, nome:'Batata (lote 2)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:38.00, custoUnitario:38.00 },
+    { id:30, nome:'Batata (lote 3)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:29.90, custoUnitario:29.90 },
+    { id:31, nome:'Batata (lote 4)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:34.00, custoUnitario:34.00 },
+    { id:32, nome:'Gordura', categoria:'Outro', unidade:'L', quantidade:1, valorPago:200.00, custoUnitario:200.00 },
+  ];
 }
 
-// ===== ABA 0: CÁLCULO DA CARNE =====
-function calcularCarne() {
-  const precoKg = Number(document.getElementById('precoKgCarne').value);
-  const gramas = Number(document.getElementById('gramasPorHamburguer').value);
-  
-  if (!precoKg || !gramas || gramas <= 0) {
-    document.getElementById('custoHamburguer').textContent = '0,00';
-    document.getElementById('quantidadePorKg').textContent = '0';
-    return;
-  }
-  
-  const custoPorGrama = precoKg / 1000;
-  const custo = custoPorGrama * gramas;
-  const qtdPorKg = Math.floor(1000 / gramas);
-  
-  document.getElementById('custoHamburguer').textContent = custo.toFixed(2).replace('.', ',');
-  document.getElementById('quantidadePorKg').textContent = qtdPorKg;
-}
-
-function salvarCarne() {
-  const precoKg = Number(document.getElementById('precoKgCarne').value);
-  const gramas = Number(document.getElementById('gramasPorHamburguer').value);
-  
-  if (!precoKg || !gramas) {
-    alert('⚠️ Preencha o preço do quilo e as gramas do hambúrguer!');
-    return;
-  }
-  
-  const custoPorGrama = precoKg / 1000;
-  const custoHamburguer = custoPorGrama * gramas;
-  
-  // Verificar se já existe
-  const indice = insumos.findIndex(i => i.nome === 'Carne Moída');
-  
-  const dadosCarne = {
-    id: Date.now(),
-    nome: 'Carne Moída',
-    unidade: 'g',
-    quantidade: 1000,
-    valorPago: precoKg,
-    custoUnitario: custoPorGrama,
-    gramasPorHamburguer: gramas,
-    custoPorHamburguer: custoHamburguer
-  };
-  
-  if (indice !== -1) {
-    insumos[indice] = dadosCarne;
-  } else {
-    insumos.push(dadosCarne);
-  }
-  
-  salvar('insumosDK', insumos);
-  alert('✅ Carne salva com sucesso!\n\n1kg = R$ ' + precoKg.toFixed(2) + '\n' + gramas + 'g por hambúrguer\nCusto unitário = R$ ' + custoHamburguer.toFixed(2));
-}
-
-// ===== ABA 1: INSUMOS =====
-function cadastrarInsumo() {
-  const nome
+function
