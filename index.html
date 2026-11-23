@@ -43,14 +43,13 @@ body {
   border-radius: 16px;
   border: 2px solid var(--dourado);
   background: linear-gradient(135deg, rgba(42,16,99,0.8), rgba(26,10,62,0.9));
-  box-shadow: 0 0 25px rgba(212,175,55,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 0 25px rgba(212,175,55,0.15);
   margin-bottom: 24px;
 }
 
 .cabecalho h1 {
   color: var(--dourado);
   font-size: 28px;
-  letter-spacing: 1px;
   margin-bottom: 4px;
 }
 
@@ -85,7 +84,6 @@ body {
   background: var(--dourado);
   color: #000;
   border-bottom: 2px solid var(--dourado-claro);
-  box-shadow: 0 -2px 8px rgba(212,175,55,0.2);
 }
 
 .nav-btn:hover:not(.ativa) {
@@ -99,7 +97,6 @@ body {
   border: 1px solid rgba(74,32,144,0.5);
   border-radius: 0 0 14px 14px;
   padding: 24px;
-  backdrop-filter: blur(10px);
 }
 
 .painel.visivel {
@@ -146,7 +143,6 @@ input, select {
   background: rgba(15,5,41,0.6);
   color: var(--branco);
   font-size: 15px;
-  transition: border-color 0.2s;
 }
 
 input:focus, select:focus {
@@ -180,18 +176,9 @@ input:focus, select:focus {
   width: 100%;
 }
 
-.btn-dourado:hover {
-  background: linear-gradient(135deg, var(--dourado-claro), var(--dourado));
-  transform: translateY(-1px);
-}
-
 .btn-verde {
   background: var(--verde);
   color: #000;
-}
-
-.btn-verde:hover {
-  background: #26B850;
 }
 
 .btn-vermelho {
@@ -200,10 +187,6 @@ input:focus, select:focus {
   padding: 6px 10px;
   font-size: 13px;
   width: auto;
-}
-
-.btn-vermelho:hover {
-  background: #C92D3C;
 }
 
 .btn-menor {
@@ -222,10 +205,6 @@ input:focus, select:focus {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-}
-
-.lista-item:hover {
-  border-color: rgba(212,175,55,0.3);
 }
 
 .item-dados h4 {
@@ -359,12 +338,6 @@ hr {
   margin: 14px 0;
 }
 
-.botao-acoes {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-
 .categoria {
   font-size: 12px;
   color: var(--dourado);
@@ -417,7 +390,6 @@ hr {
           <option value="ml">Mililitro (mL)</option>
           <option value="cx">Caixa</option>
           <option value="pc">Pacote</option>
-          <option value="pct">Pct / Sachê</option>
         </select>
       </div>
     </div>
@@ -434,14 +406,14 @@ hr {
     </div>
     
     <div class="grupo-input">
-      <label>Porção usada (opcional) — ex: 20ml, 85g, 1 un</label>
+      <label>Porção usada (opcional)</label>
       <input type="text" id="porcao" placeholder="Ex: 20ml">
     </div>
     
     <button class="btn btn-dourado" onclick="cadastrarInsumo()">➕ Cadastrar Insumo</button>
 
     <h3>📋 Insumos Cadastrados</h3>
-    <div id="listaInsumos"></div>
+    <div id="listaInsumos"><div class="vazio">Carregando...</div></div>
   </div>
 
   <!-- ABA 1: LANCHES -->
@@ -466,7 +438,7 @@ hr {
     <button class="btn btn-dourado" onclick="calcularESalvarLanche()">💾 Calcular e Salvar Lanche</button>
 
     <h3>📋 Lanches Cadastrados</h3>
-    <div id="listaLanches"></div>
+    <div id="listaLanches"><div class="vazio">Nenhum lanche cadastrado ainda.</div></div>
   </div>
 
   <!-- ABA 2: RESUMO -->
@@ -474,7 +446,7 @@ hr {
     <h2>📊 Resumo de Custos</h2>
     
     <div class="aviso">
-      💡 Sempre que atualizar o preço de um insumo, os lanches que usam ele terão o custo recalculado automaticamente quando você os salvar novamente!
+      💡 Sempre que atualizar o preço de um insumo, recalcula o lanche para ver o novo custo!
     </div>
 
     <div id="conteudoResumo">
@@ -489,7 +461,6 @@ let insumos = [];
 let lanches = [];
 let linhasInsumo = [{ id: Date.now() }];
 
-// Salvar e carregar dados
 function salvar(chave, valor) {
   try { localStorage.setItem(chave, JSON.stringify(valor)); return true; }
   catch (e) { return false; }
@@ -498,57 +469,96 @@ function salvar(chave, valor) {
 function carregar(chave) {
   try {
     const dados = localStorage.getItem(chave);
-    return dados ? JSON.parse(dados) : [];
-  } catch (e) { return []; }
+    return dados ? JSON.parse(dados) : null;
+  } catch (e) { return null; }
 }
 
-// DADOS INICIAIS — já vem preenchido!
+// DADOS INICIAIS
 function dadosIniciais() {
   return [
-    // Ingredientes base
     { id:1, nome:'Pão', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:1.73, custoUnitario:1.73, porcao:'1 un' },
-    { id:2, nome:'Carne', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:3.50, custoUnitario:3.50, porcao:'1 porção' },
+    { id:2, nome:'Carne', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:3.50, custoUnitario:3.50, porcao:'1 porção' },
     { id:3, nome:'Molhos', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
     { id:4, nome:'Manteiga', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
     { id:5, nome:'Embalagem', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:1.00, custoUnitario:1.00, porcao:'1 un' },
     { id:6, nome:'Cheddar', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
     { id:7, nome:'Cebola Rocha', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
-    
-    // Maionese Verde
-    { id:8, nome:'Maionese Verde — Leite', categoria:'Molho', unidade:'L', quantidade:1, valorPago:3.00, custoUnitario:3.00 },
-    { id:9, nome:'Maionese Verde — Óleo', categoria:'Molho', unidade:'L', quantidade:1, valorPago:7.00, custoUnitario:7.00 },
-    { id:10, nome:'Maionese Verde — Alho', categoria:'Molho', unidade:'un', quantidade:1, valorPago:1.00, custoUnitario:1.00 },
-    { id:11, nome:'Maionese Verde — Cheiro Verde', categoria:'Molho', unidade:'pc', quantidade:1, valorPago:5.00, custoUnitario:5.00 },
-    { id:12, nome:'Maionese Verde 2,5L', categoria:'Molho', unidade:'L', quantidade:2.5, valorPago:17.00, custoUnitario:6.80, porcao:'20ml = R$0,14' },
-    { id:13, nome:'Porção Maionese Verde (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
-    
-    // Maionese de Bacon
-    { id:14, nome:'Maionese Bacon — Bacon', categoria:'Molho', unidade:'g', quantidade:100, valorPago:6.50, custoUnitario:0.065 },
-    { id:15, nome:'Maionese Bacon — Fumaça em pó', categoria:'Molho', unidade:'g', quantidade:1, valorPago:0.33, custoUnitario:0.33 },
-    { id:16, nome:'Maionese Bacon — Óleo', categoria:'Molho', unidade:'L', quantidade:1, valorPago:7.00, custoUnitario:7.00 },
-    { id:17, nome:'Maionese Bacon — Leite', categoria:'Molho', unidade:'L', quantidade:1, valorPago:3.00, custoUnitario:3.00 },
-    { id:18, nome:'Maionese de Bacon 2,5L', categoria:'Molho', unidade:'L', quantidade:2.5, valorPago:16.83, custoUnitario:6.73, porcao:'20ml = R$0,14' },
-    { id:19, nome:'Porção Maionese Bacon (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
-    
-    // Cheddar Cremoso
-    { id:20, nome:'Cheddar — Pacote', categoria:'Ingrediente', unidade:'pc', quantidade:1, valorPago:108.00, custoUnitario:108.00 },
-    { id:21, nome:'Cheddar — 1/4 pacote', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:27.00, custoUnitario:27.00 },
-    { id:22, nome:'Cheddar — Creme de Leite', categoria:'Ingrediente', unidade:'cx', quantidade:1, valorPago:10.00, custoUnitario:10.00 },
-    { id:23, nome:'Cheddar Cremoso — 3L', categoria:'Ingrediente', unidade:'L', quantidade:3, valorPago:38.00, custoUnitario:12.67, porcao:'20ml = R$0,30' },
-    { id:24, nome:'Porção Cheddar (20ml)', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'20ml' },
-    
-    // Embalagens
-    { id:25, nome:'Embalagem Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.80, custoUnitario:0.80 },
-    { id:26, nome:'Saco Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.20, custoUnitario:0.20 },
-    { id:27, nome:'Embalagem simples', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.10, custoUnitario:0.10 },
-    
-    // Batatas
-    { id:28, nome:'Batata (lote 1)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:20.00, custoUnitario:20.00 },
-    { id:29, nome:'Batata (lote 2)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:38.00, custoUnitario:38.00 },
-    { id:30, nome:'Batata (lote 3)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:29.90, custoUnitario:29.90 },
-    { id:31, nome:'Batata (lote 4)', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:34.00, custoUnitario:34.00 },
-    { id:32, nome:'Gordura', categoria:'Outro', unidade:'L', quantidade:1, valorPago:200.00, custoUnitario:200.00 },
+    { id:8, nome:'Maionese Verde (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
+    { id:9, nome:'Maionese de Bacon (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
+    { id:10, nome:'Cheddar Cremoso (20ml)', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'20ml' },
+    { id:11, nome:'Embalagem Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.80, custoUnitario:0.80 },
+    { id:12, nome:'Saco Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.20, custoUnitario:0.20 },
+    { id:13, nome:'Embalagem simples', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.10, custoUnitario:0.10 },
+    { id:14, nome:'Batata', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:20.00, custoUnitario:20.00 },
+    { id:15, nome:'Gordura', categoria:'Outro', unidade:'L', quantidade:1, valorPago:200.00, custoUnitario:200.00 },
   ];
 }
 
-function
+function lanchesIniciais() {
+  return [
+    { id:1, nome:'DK JR', precoVenda:0, usos:[
+      {nome:'Pão', quantidadeUsada:1, custo:1.73},
+      {nome:'Carne', quantidadeUsada:1, custo:3.50},
+      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
+      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
+      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
+    ], custoTotal:7.03 },
+    { id:2, nome:'DK Tradicional', precoVenda:0, usos:[
+      {nome:'Pão', quantidadeUsada:1, custo:1.73},
+      {nome:'Carne', quantidadeUsada:1, custo:3.50},
+      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
+      {nome:'Cheddar', quantidadeUsada:1, custo:0.30},
+      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
+      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
+      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
+    ], custoTotal:7.23 },
+    { id:3, nome:'DK Duplo', precoVenda:0, usos:[
+      {nome:'Pão', quantidadeUsada:1, custo:1.73},
+      {nome:'Carne', quantidadeUsada:2, custo:7.00},
+      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
+      {nome:'Cheddar', quantidadeUsada:2, custo:0.60},
+      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
+      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
+      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
+    ], custoTotal:11.03 },
+    { id:4, nome:'DK 3.0', precoVenda:0, usos:[
+      {nome:'Pão', quantidadeUsada:1, custo:1.73},
+      {nome:'Carne', quantidadeUsada:3, custo:10.50},
+      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
+      {nome:'Cheddar', quantidadeUsada:3, custo:0.90},
+      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
+      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
+      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
+    ], custoTotal:14.83 },
+  ];
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  let dadosSalvos = carregar('insumosDK');
+  insumos = dadosSalvos ? dadosSalvos : dadosIniciais();
+  
+  let lanchesSalvos = carregar('lanchesDK');
+  lanches = lanchesSalvos ? lanchesSalvos : lanchesIniciais();
+  
+  salvar('insumosDK', insumos);
+  salvar('lanchesDK', lanches);
+  
+  abrirAba(0);
+});
+
+function abrirAba(n) {
+  abaAtual = n;
+  document.querySelectorAll('.painel').forEach((p, i) => p.classList.toggle('visivel', i === n));
+  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('ativa', i === n));
+  
+  if (n === 0) carregarListaInsumos();
+  if (n === 1) { carregarSelecaoInsumos(); carregarListaLanches(); }
+  if (n === 2) carregarResumo();
+}
+
+// INSUMOS
+function cadastrarInsumo() {
+  const nome = document.getElementById('nomeInsumo').value.trim();
+  const categoria = document.getElementById('categoria').value;
+  const unidade = document.getElementById('unidade').value;
+  const qtd = Number(document.getElementById('
