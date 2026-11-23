@@ -23,29 +23,53 @@ input, select {width:100%;padding:10px;border-radius:8px;border:1px solid #7b2cb
 .botaoVermelho {background:#e63946;color:#fff;}
 .botaoMenor {width:auto;padding:8px 12px;font-size:14px;margin:4px;}
 .card {background:#200d3f;border:1px solid #7b2cbf;border-radius:10px;padding:14px;margin:10px 0;}
-.insumo-item {background:#200d3f;border:1px solid #D4AF37;border-radius:8px;padding:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-.lanche-item {background:#200d3f;border:1px solid #7b2cbf;border-radius:10px;padding:14px;margin:10px 0;}
-.custo-baixo {color:#2cc95b;font-weight:bold;}
-.custo-medio {color:#ffc107;font-weight:bold;}
-.custo-alto {color:#e63946;font-weight:bold;}
-.linha-insumo {display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;}
-.linha-insumo select, .linha-insumo input {flex:1;min-width:100px;margin:0;}
+.destaque {background:#1f0b3b;border:2px solid #D4AF37;border-radius:12px;padding:16px;margin:12px 0;text-align:center;}
+.resultado {font-size:22px;font-weight:bold;color:#D4AF37;margin-top:8px;}
 .aviso {background:#2a1055;border:1px solid #7b2cbf;border-radius:8px;padding:10px;margin:10px 0;font-size:14px;color:#e0c9ff;}
-.total-caixa {background:#1f0b3b;border:2px solid #D4AF37;border-radius:10px;padding:12px;margin:12px 0;text-align:center;font-size:18px;font-weight:bold;color:#D4AF37;}
+.item-lanche {background:#200d3f;border:1px solid #D4AF37;border-radius:8px;padding:12px;margin:6px 0;}
 </style>
 </head>
 <body>
-<div class="topo"><h1>📦 DK HAMBURGUERIA — Painel de Insumos</h1></div>
+<div class="topo"><h1>📦 DK — Cálculo de Insumos</h1></div>
 
 <div class="abas">
-<button class="botaoAba ativa" onclick="mudarAba(0)">📥 Insumos</button>
-<button class="botaoAba" onclick="mudarAba(1)">🍔 Lanches</button>
-<button class="botaoAba" onclick="mudarAba(2)">📊 Resumo</button>
+<button class="botaoAba ativa" onclick="mudarAba(0)">🥩 Carne</button>
+<button class="botaoAba" onclick="mudarAba(1)">📋 Outros Insumos</button>
+<button class="botaoAba" onclick="mudarAba(2)">🍔 Lanches</button>
 </div>
 
-<!-- ABA 0: INSUMOS -->
+<!-- ABA 0: CÁLCULO DA CARNE -->
 <div class="conteudoAba visivel" id="aba0">
-<h2>Cadastrar Insumo</h2>
+<h2>🥩 Cálculo do Hambúrguer</h2>
+
+<div class="destaque">
+  <h3>Preço do Quilo da Carne</h3>
+  <input type="number" id="precoKgCarne" step="0.01" placeholder="Ex: 35.00" oninput="calcularCarne()">
+  
+  <h3>Gramas por Hambúrguer</h3>
+  <input type="number" id="gramasPorHamburguer" step="1" placeholder="Ex: 85" oninput="calcularCarne()">
+  
+  <div class="resultado">
+    Custo de 1 hambúrguer: R$ <span id="custoUmHamburguer">0.00</span>
+  </div>
+  <div style="margin-top:8px;opacity:0.8;">
+    Com 1kg você faz aproximadamente: <strong id="quantosPorKg">0</strong> hambúrgueres
+  </div>
+</div>
+
+<button class="botao botaoVerde" onclick="salvarCarneNosInsumos()">💾 Salvar Carne nos Insumos</button>
+
+<div class="aviso">
+💡 Como funciona:<br>
+- Digita quanto pagou por 1kg de carne<br>
+- Digita quantas gramas vai em cada hambúrguer<br>
+- Ele mostra automaticamente quanto custa SÓ a carne de cada lanche! ✅
+</div>
+</div>
+
+<!-- ABA 1: OUTROS INSUMOS -->
+<div class="conteudoAba" id="aba1">
+<h2>📋 Cadastrar Outros Insumos</h2>
 <input type="text" id="nomeInsumo" placeholder="Nome do insumo (ex: Pão)">
 <select id="unidade">
 <option value="kg">Quilograma (kg)</option>
@@ -64,34 +88,27 @@ input, select {width:100%;padding:10px;border-radius:8px;border:1px solid #7b2cb
 <div id="listaInsumos"></div>
 </div>
 
-<!-- ABA 1: LANCHES -->
-<div class="conteudoAba" id="aba1">
-<h2>Cadastrar Lanche</h2>
-<input type="text" id="nomeLanche" placeholder="Nome do lanche (ex: DK JR)">
+<!-- ABA 2: LANCHES -->
+<div class="conteudoAba" id="aba2">
+<h2>🍔 Custo dos Lanches</h2>
+<input type="text" id="nomeLanche" placeholder="Nome do lanche">
 <input type="number" id="precoVenda" step="0.01" placeholder="Preço de venda R$">
 
-<h3>🧪 Selecione os insumos e quanto usa:</h3>
+<h3>🧪 Quanto usa de cada insumo:</h3>
 <div id="selecaoInsumos"></div>
-<button class="botao botaoVerde" style="margin-top:10px;" onclick="adicionarLinhaInsumo()">➕ Adicionar outro insumo</button>
+<button class="botao botaoVerde" style="margin-top:10px;" onclick="adicionarLinha()">➕ Adicionar insumo</button>
 
-<button class="botao botaoDourado" style="margin-top:16px;" onclick="cadastrarLanche()">💾 Salvar Lanche</button>
+<button class="botao botaoDourado" style="margin-top:16px;" onclick="calcularLanche()">💾 Calcular & Salvar</button>
 
 <h3>📋 Lanches Cadastrados</h3>
 <div id="listaLanches"></div>
-</div>
-
-<!-- ABA 2: RESUMO -->
-<div class="conteudoAba" id="aba2">
-<h2>📊 Resumo de Custos</h2>
-<div class="aviso">Atualize o preço de qualquer insumo que os custos dos lanches recalculam automaticamente!</div>
-<div id="resumoCustos"></div>
 </div>
 
 <script>
 let abaAtual=0;
 let insumos=[];
 let lanches=[];
-let linhasInsumo=[{id:Date.now()}];
+let linhas=[{id:Date.now()}];
 
 function salvarLocal(c,v){try{localStorage.setItem(c,JSON.stringify(v));return true}catch(e){return false}}
 function carregarLocal(c){try{const d=localStorage.getItem(c);return d?JSON.parse(d):[]}catch(e){return []}}
@@ -99,6 +116,10 @@ function carregarLocal(c){try{const d=localStorage.getItem(c);return d?JSON.pars
 document.addEventListener('DOMContentLoaded',function(){
   insumos=carregarLocal('insumos');
   lanches=carregarLocal('lanches');
+  const carne=insumos.find(i=>i.nome==='Carne Moída');
+  if(carne){
+    document.getElementById('precoKgCarne').value=(carne.valorPago/carne.quantidade).toFixed(2);
+  }
   mudarAba(0);
 });
 
@@ -106,12 +127,63 @@ function mudarAba(n){
   abaAtual=n;
   document.querySelectorAll('.conteudoAba').forEach((e,i)=>e.classList.toggle('visivel',i===n));
   document.querySelectorAll('.botaoAba').forEach((e,i)=>e.classList.toggle('ativa',i===n));
-  if(n===0) carregarListaInsumos();
-  if(n===1) { carregarSelecaoInsumos(); carregarListaLanches(); }
-  if(n===2) carregarResumo();
+  if(n===1) carregarListaInsumos();
+  if(n===2){carregarSelecaoInsumos();carregarListaLanches();}
 }
 
-// === ABA INSUMOS ===
+// === ABA 0: CÁLCULO DA CARNE ===
+function calcularCarne(){
+  const precoKg=Number(document.getElementById('precoKgCarne').value);
+  const gramas=Number(document.getElementById('gramasPorHamburguer').value);
+  
+  if(!precoKg||!gramas||gramas<=0){
+    document.getElementById('custoUmHamburguer').textContent='0.00';
+    document.getElementById('quantosPorKg').textContent='0';
+    return;
+  }
+  
+  const custoGrama=precoKg/1000;
+  const custoHamburguer=custoGrama*gramas;
+  const quantidadePorKg=Math.floor(1000/gramas);
+  
+  document.getElementById('custoUmHamburguer').textContent=custoHamburguer.toFixed(2);
+  document.getElementById('quantosPorKg').textContent=quantidadePorKg;
+}
+
+function salvarCarneNosInsumos(){
+  const precoKg=Number(document.getElementById('precoKgCarne').value);
+  const gramas=Number(document.getElementById('gramasPorHamburguer').value);
+  
+  if(!precoKg||!gramas){alert('⚠️ Preencha o preço do kg e as gramas!');return;}
+  
+  const custoGrama=precoKg/1000;
+  const custoPorcao=custoGrama*gramas;
+  
+  const indice=insumos.findIndex(i=>i.nome==='Carne Moída');
+  if(indice!==-1){
+    insumos[indice].quantidade=1000;
+    insumos[indice].valorPago=precoKg;
+    insumos[indice].custoUnitario=custoGrama;
+    insumos[indice].gramasPorHamburguer=gramas;
+    insumos[indice].custoPorcao=custoPorcao;
+  }else{
+    insumos.push({
+      id:Date.now(),
+      nome:'Carne Moída',
+      unidade:'g',
+      quantidade:1000,
+      valorPago:precoKg,
+      custoUnitario:custoGrama,
+      gramasPorHamburguer:gramas,
+      custoPorcao:custoPorcao
+    });
+  }
+  
+  salvarLocal('insumos',insumos);
+  alert('✅ Carne salva nos insumos!\n\n1kg = R$ '+precoKg.toFixed(2)+'\n'+gramas+'g por hambúrguer\nCusto por lanche = R$ '+custoPorcao.toFixed(2));
+}
+
+// === ABA 1: OUTROS INSUMOS ===
 function cadastrarInsumo(){
   const nome=document.getElementById('nomeInsumo').value.trim();
   const unidade=document.getElementById('unidade').value;
@@ -120,80 +192,81 @@ function cadastrarInsumo(){
   
   if(!nome||!qtd||!valor){alert('⚠️ Preencha todos os campos!');return;}
   
-  const custoUnitario=valor/qtd;
-  insumos.push({id:Date.now(),nome,unidade,quantidade:qtd,valorPago:valor,custoUnitario});
-  salvarLocal('insumos',insumos);
+  insumos.push({
+    id:Date.now(),
+    nome:nome,
+    unidade:unidade,
+    quantidade:qtd,
+    valorPago:valor,
+    custoUnitario:valor/qtd
+  });
   
+  salvarLocal('insumos',insumos);
   document.getElementById('nomeInsumo').value='';
   document.getElementById('quantidade').value='';
   document.getElementById('valorPago').value='';
-  
   carregarListaInsumos();
-  alert('✅ Insumo cadastrado! Custo unitário: R$ '+custoUnitario.toFixed(4));
+  alert('✅ Insumo cadastrado!');
 }
 
 function carregarListaInsumos(){
   const d=document.getElementById('listaInsumos');
-  if(insumos.length===0){d.innerHTML='<p style="opacity:0.7;padding:10px;">Nenhum insumo cadastrado ainda.</p>';return}
+  if(insumos.length===0){d.innerHTML='<p style="opacity:0.7;padding:10px;">Nenhum insumo cadastrado ainda.</p>';return;}
   d.innerHTML='';
   insumos.forEach((ins,i)=>{
+    let infoExtra='';
+    if(ins.nome==='Carne Moída'&&ins.gramasPorHamburguer){
+      infoExtra=`<br>🍔 ${ins.gramasPorHamburguer}g = R$ ${ins.custoPorcao.toFixed(2)}`;
+    }
     d.innerHTML+=`
-      <div class="insumo-item">
-        <div>
-          <strong>${ins.nome}</strong><br>
-          ${ins.quantidade} ${ins.unidade} — R$ ${ins.valorPago.toFixed(2)}<br>
-          Custo: R$ ${ins.custoUnitario.toFixed(4)} / ${ins.unidade}
-        </div>
-        <div>
-          <button class="botao botaoMenor botaoVermelho" onclick="excluirInsumo(${i})">🗑️</button>
-        </div>
+      <div class="item-lanche">
+        <strong>${ins.nome}</strong><br>
+        ${ins.quantidade} ${ins.unidade} — R$ ${ins.valorPago.toFixed(2)}<br>
+        Custo: R$ ${ins.custoUnitario.toFixed(4)} / ${ins.unidade}${infoExtra}
+        <button class="botao botaoMenor botaoVermelho" style="float:right;margin-top:-4px;" onclick="excluirInsumo(${i})">🗑️</button>
       </div>
     `;
   });
 }
 
 function excluirInsumo(i){
-  if(!confirm('Excluir este insumo? Isso pode afetar os custos dos lanches!'))return;
+  if(!confirm('Excluir este insumo?'))return;
   insumos.splice(i,1);
   salvarLocal('insumos',insumos);
   carregarListaInsumos();
-  carregarResumo();
 }
 
-// === ABA LANCHES ===
+// === ABA 2: LANCHES ===
 function carregarSelecaoInsumos(){
   const d=document.getElementById('selecaoInsumos');
-  if(insumos.length===0){
-    d.innerHTML='<p style="opacity:0.7;">⚠️ Cadastre insumos primeiro na aba anterior!</p>';
-    return;
-  }
+  if(insumos.length===0){d.innerHTML='<p style="opacity:0.7;">⚠️ Cadastre insumos primeiro!</p>';return;}
   d.innerHTML='';
-  linhasInsumo.forEach(l=>{
+  linhas.forEach(l=>{
     d.innerHTML+=`
-      <div class="linha-insumo" id="linha-${l.id}">
-        <select data-id="${l.id}" class="selInsumo">
+      <div class="linha-insumo" id="linha-${l.id}" style="display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;">
+        <select data-id="${l.id}" class="selInsumo" style="flex:1;min-width:150px;margin:0;">
           <option value="">Selecione o insumo</option>
-          ${insumos.map(ins=>`<option value="${ins.id}">${ins.nome} (R$ ${ins.custoUnitario.toFixed(4)}/${ins.unidade})</option>`).join('')}
+          ${insumos.map(ins=>`<option value="${ins.id}">${ins.nome}</option>`).join('')}
         </select>
-        <input type="number" data-id="${l.id}" class="qtdUso" step="0.001" placeholder="Qtd usada">
-        <button class="botao botaoMenor botaoVermelho" onclick="removerLinha(${l.id})">✕</button>
+        <input type="number" data-id="${l.id}" class="qtdUso" step="0.001" placeholder="Qtd usada" style="width:120px;margin:0;">
+        <button class="botao botaoMenor botaoVermelho" style="width:40px;" onclick="removerLinha(${l.id})">✕</button>
       </div>
     `;
   });
 }
 
-function adicionarLinhaInsumo(){
-  linhasInsumo.push({id:Date.now()});
+function adicionarLinha(){
+  linhas.push({id:Date.now()});
   carregarSelecaoInsumos();
 }
 
 function removerLinha(id){
-  linhasInsumo=linhasInsumo.filter(l=>l.id!==id);
-  if(linhasInsumo.length===0) linhasInsumo=[{id:Date.now()}];
+  linhas=linhas.filter(l=>l.id!==id);
+  if(linhas.length===0)linhas=[{id:Date.now()}];
   carregarSelecaoInsumos();
 }
 
-function cadastrarLanche(){
+function calcularLanche(){
   const nome=document.getElementById('nomeLanche').value.trim();
   const precoVenda=Number(document.getElementById('precoVenda').value);
   
@@ -201,35 +274,42 @@ function cadastrarLanche(){
   
   const usos=[];
   document.querySelectorAll('.linha-insumo').forEach(linha=>{
-    const idInsumo=Number(linha.querySelector('.selInsumo').value);
-    const qtdUsada=Number(linha.querySelector('.qtdUso').value);
-    if(idInsumo&&qtdUsada>0){
-      const insumo=insumos.find(i=>i.id===idInsumo);
+    const id=Number(linha.querySelector('.selInsumo').value);
+    const qtd=Number(linha.querySelector('.qtdUso').value);
+    if(id&&qtd>0){
+      const insumo=insumos.find(i=>i.id===id);
+      let custoItem=0;
+      if(insumo.nome==='Carne Moída'&&insumo.custoPorcao){
+        custoItem=insumo.custoPorcao;
+      }else{
+        custoItem=qtd*insumo.custoUnitario;
+      }
       usos.push({
-        idInsumo,
-        nomeInsumo:insumo.nome,
-        quantidadeUsada:qtdUsada,
+        nome:insumo.nome,
+        quantidadeUsada:qtd,
         unidade:insumo.unidade,
-        custo:qtdUsada*insumo.custoUnitario
+        custo:custoItem
       });
     }
   });
   
-  if(usos.length===0){alert('⚠️ Selecione pelo menos um insumo!');return;}
+  if(usos.length===0){alert('⚠️ Selecione os insumos!');return;}
   
   const custoTotal=usos.reduce((s,u)=>s+u.custo,0);
-  const margem=precoVenda>0 ? ((precoVenda-custoTotal)/precoVenda*100) : 0;
+  const lucro=precoVenda-custoTotal;
+  const margem=precoVenda>0 ? (lucro/precoVenda*100) : 0;
   
-  lanches.push({id:Date.now(),nome,precoVenda,usos,custoTotal,margem});
+  lanches.push({id:Date.now(),nome,precoVenda,usos,custoTotal,lucro,margem});
   salvarLocal('lanches',lanches);
   
   document.getElementById('nomeLanche').value='';
   document.getElementById('precoVenda').value='';
-  linhasInsumo=[{id:Date.now()}];
+  linhas=[{id:Date.now()}];
   
   carregarSelecaoInsumos();
   carregarListaLanches();
-  alert('✅ Lanche cadastrado!\nCusto: R$ '+custoTotal.toFixed(2)+' | Venda: R$ '+precoVenda.toFixed(2)+'\nMargem: '+margem.toFixed(1)+'%');
+  
+  alert('✅ '+nome+'\nCusto: R$ '+custoTotal.toFixed(2)+'\nVenda: R$ '+precoVenda.toFixed(2)+'\nLucro: R$ '+lucro.toFixed(2)+' ('+margem.toFixed(1)+'%)');
 }
 
 function carregarListaLanches(){
@@ -237,18 +317,15 @@ function carregarListaLanches(){
   if(lanches.length===0){d.innerHTML='<p style="opacity:0.7;padding:10px;">Nenhum lanche cadastrado ainda.</p>';return;}
   d.innerHTML='';
   lanches.forEach((l,i)=>{
-    const cls=l.margem>=50?'custo-baixo':l.margem>=35?'custo-medio':'custo-alto';
     d.innerHTML+=`
-      <div class="lanche-item">
-        <h4 style="font-size:17px;margin-bottom:8px;">${l.nome}</h4>
-        ${l.usos.map(u=>`• ${u.quantidadeUsada} ${u.unidade} de ${u.nomeInsumo} — R$ ${u.custo.toFixed(2)}`).join('<br>')}
+      <div class="item-lanche">
+        <h4 style="font-size:16px;color:#D4AF37;margin-bottom:8px;">${l.nome}</h4>
+        ${l.usos.map(u=>`• ${u.nome}: R$ ${u.custo.toFixed(2)}`).join('<br>')}
         <hr style="border:none;border-top:1px solid #7b2cbf;margin:8px 0;">
-        <strong>Custo: R$ ${l.custoTotal.toFixed(2)}</strong> | 
+        <strong>Custo: R$ ${l.custoTotal.toFixed(2)}</strong> |
         <strong>Venda: R$ ${l.precoVenda.toFixed(2)}</strong><br>
-        <strong class="${cls}">Margem: ${l.margem.toFixed(1)}%</strong>
-        <div style="margin-top:8px;">
-          <button class="botao botaoMenor botaoVermelho" onclick="excluirLanche(${i})">🗑️ Excluir</button>
-        </div>
+        <strong>Lucro: R$ ${l.lucro.toFixed(2)} (${l.margem.toFixed(1)}%)</strong>
+        <button class="botao botaoMenor botaoVermelho" style="float:right;margin-top:-24px;" onclick="excluirLanche(${i})">🗑️</button>
       </div>
     `;
   });
@@ -259,55 +336,6 @@ function excluirLanche(i){
   lanches.splice(i,1);
   salvarLocal('lanches',lanches);
   carregarListaLanches();
-}
-
-// === ABA RESUMO ===
-function carregarResumo(){
-  const d=document.getElementById('resumoCustos');
-  if(lanches.length===0){d.innerHTML='<p style="opacity:0.7;text-align:center;padding:20px;">Cadastre lanches na aba anterior para ver o resumo!</p>';return;}
-  
-  let html='';
-  let custoTotalGeral=0, vendaTotal=0;
-  
-  lanches.forEach(l=>{
-    const margemAtual=l.precoVenda>0 ? ((l.precoVenda-l.custoTotal)/l.precoVenda*100) : 0;
-    const cls=margemAtual>=50?'custo-baixo':margemAtual>=35?'custo-medio':'custo-alto';
-    custoTotalGeral+=l.custoTotal;
-    vendaTotal+=l.precoVenda;
-    
-    html+=`
-      <div class="card">
-        <h4 style="font-size:16px;color:#D4AF37;margin-bottom:8px;">${l.nome}</h4>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-          <div>
-            <div style="font-size:13px;opacity:0.7;">Custo</div>
-            <div style="font-weight:bold;font-size:16px;">R$ ${l.custoTotal.toFixed(2)}</div>
-          </div>
-          <div>
-            <div style="font-size:13px;opacity:0.7;">Venda</div>
-            <div style="font-weight:bold;font-size:16px;">R$ ${l.precoVenda.toFixed(2)}</div>
-          </div>
-          <div>
-            <div style="font-size:13px;opacity:0.7;">Lucro</div>
-            <div class="${cls}" style="font-size:16px;">${margemAtual.toFixed(1)}%</div>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-  
-  html+=`
-    <div class="total-caixa">
-      💡 Quando alterar o preço de um insumo, volte aqui e os custos atualizam!
-    </div>
-    <div class="card" style="border-color:#D4AF37;">
-      <strong>Total de ${lanches.length} lanches cadastrados</strong><br>
-      Custo médio por lanche: R$ ${(custoTotalGeral/lanches.length).toFixed(2)}<br>
-      Lucro médio: ${(((vendaTotal-custoTotalGeral)/vendaTotal)*100).toFixed(1)}%
-    </div>
-  `;
-  
-  d.innerHTML=html;
 }
 </script>
 </body>
