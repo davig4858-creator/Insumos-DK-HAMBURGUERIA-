@@ -1,178 +1,77 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DK HAMBURGUERIA — Ficha de Custos</title>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DK Hamburgueria | Ficha de Custos</title>
 <style>
-:root {
-  --roxo-escuro: #0F0529;
-  --roxo-medio: #2A1063;
-  --roxo-claro: #4A2090;
-  --dourado: #D4AF37;
-  --dourado-claro: #F0D76C;
-  --branco: #FFFFFF;
-  --cinza-claro: #B8B5C8;
-  --verde: #2CC95B;
-  --vermelho: #E63946;
-  --amarelo: #FFC107;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, var(--roxo-escuro) 0%, #1A0A3E 100%);
-  color: var(--branco);
-  min-height: 100vh;
-  padding: 16px;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.cabecalho {
-  text-align: center;
-  padding: 28px 20px;
-  border-radius: 16px;
-  border: 2px solid var(--dourado);
-  background: linear-gradient(135deg, rgba(42,16,99,0.8), rgba(26,10,62,0.9));
-  box-shadow: 0 0 25px rgba(212,175,55,0.15);
-  margin-bottom: 24px;
-}
-
-.cabecalho h1 {
-  color: var(--dourado);
-  font-size: 28px;
-  margin-bottom: 4px;
-}
-
-.cabecalho p {
-  color: var(--cinza-claro);
-  font-size: 14px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  background: rgba(42,16,99,0.4);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 14px 12px;
-  text-align: left;
-  border-bottom: 1px solid rgba(74,32,144,0.3);
-}
-
-th {
-  background: rgba(212,175,55,0.15);
-  color: var(--dourado-claro);
-  font-weight: 600;
-}
-
-tr:hover {
-  background: rgba(74,32,144,0.15);
-}
-
-.total-linha {
-  background: rgba(212,175,55,0.1);
-  font-weight: 600;
-}
-
-.total-valor {
-  color: var(--dourado-claro);
-  font-size: 18px;
-}
-
-h2 {
-  color: var(--dourado-claro);
-  font-size: 20px;
-  margin: 30px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(74,32,144,0.3);
-}
-
-.aviso {
-  background: rgba(74,32,144,0.2);
-  border-left: 3px solid var(--dourado);
-  padding: 12px 16px;
-  border-radius: 6px;
-  margin: 20px 0;
-  font-size: 13px;
-  color: #D0C8E8;
-  line-height: 1.6;
-}
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="cabecalho">
-    <h1>🍔 DK HAMBURGUERIA</h1>
-    <p>Ficha de Custos dos Lanches</p>
-  </div>
-
-  <h2>📋 DK JR — Custo: R$ 7,03</h2>
-  <table>
-    <tr><th>Ingrediente</th><th>Valor</th></tr>
-    <tr><td>Pão</td><td>R$ 1,73</td></tr>
-    <tr><td>Carne</td><td>R$ 3,50</td></tr>
-    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
-    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
-    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
-    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 7,03</strong></td></tr>
-  </table>
-
-  <h2>📋 DK Tradicional — Custo: R$ 7,23</h2>
-  <table>
-    <tr><th>Ingrediente</th><th>Valor</th></tr>
-    <tr><td>Pão</td><td>R$ 1,73</td></tr>
-    <tr><td>Carne</td><td>R$ 3,50</td></tr>
-    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
-    <tr><td>Cheddar</td><td>R$ 0,30</td></tr>
-    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
-    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
-    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
-    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 7,23</strong></td></tr>
-  </table>
-
-  <h2>📋 DK Duplo — Custo: R$ 11,03</h2>
-  <table>
-    <tr><th>Ingrediente</th><th>Valor</th></tr>
-    <tr><td>Pão</td><td>R$ 1,73</td></tr>
-    <tr><td>Carne (2x)</td><td>R$ 7,00</td></tr>
-    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
-    <tr><td>Cheddar (2x)</td><td>R$ 0,60</td></tr>
-    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
-    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
-    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
-    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 11,03</strong></td></tr>
-  </table>
-
-  <h2>📋 DK 3.0 — Custo: R$ 14,83</h2>
-  <table>
-    <tr><th>Ingrediente</th><th>Valor</th></tr>
-    <tr><td>Pão</td><td>R$ 1,73</td></tr>
-    <tr><td>Carne (3x)</td><td>R$ 10,50</td></tr>
-    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
-    <tr><td>Cheddar (3x)</td><td>R$ 0,90</td></tr>
-    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
-    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
-    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
-    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 14,83</strong></td></tr>
-  </table>
-
-  <div class="aviso">
-    💡 Atualizado em: 24/11/2026 — DK Hamburgueria
-  </div>
+:root{--bg:#100d16;--panel:#1b1624;--panel2:#241d30;--purple:#7c3aed;--gold:#f5c451;--white:#f8f7fb;--muted:#b8afc7;--line:#382d49;--green:#63d7a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#281b3d 0,#100d16 48%);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{padding:24px 18px;border-bottom:1px solid var(--line)}.wrap{max-width:1100px;margin:auto}.brand{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--gold)}h1{margin:7px 0;font-size:clamp(25px,4vw,35px)}p{color:var(--muted);margin:0}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}main{max-width:1100px;margin:22px auto;padding:0 15px 35px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.box,.product{background:linear-gradient(145deg,var(--panel),#17121f);border:1px solid var(--line);border-radius:16px;padding:17px}.label{font-size:13px;color:var(--muted)}.big{font-size:27px;font-weight:850;color:var(--gold);margin-top:5px}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}.toolbar input{flex:1;min-width:180px}input,select,button{font:inherit;color:var(--white);background:#120e19;border:1px solid var(--line);border-radius:10px;padding:10px 11px}button{cursor:pointer;background:var(--purple);border-color:var(--purple);font-weight:750}button.gold{background:var(--gold);border-color:var(--gold);color:#241708}button.secondary{background:var(--panel2);border-color:var(--line)}button.red{background:#49202b;border-color:#6d2d3b}.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.product h2{margin:0;font-size:20px}.prodhead{display:flex;justify-content:space-between;gap:10px;align-items:start}.cost{font-size:25px;font-weight:850;color:var(--gold);white-space:nowrap}.recipe{width:100%;border-collapse:collapse;margin:15px 0 12px}.recipe th,.recipe td{text-align:left;border-bottom:1px solid var(--line);padding:9px 4px;font-size:13px}.recipe th{color:var(--muted);font-weight:600}.recipe input{width:78px;padding:7px}.recipe .ing{min-width:110px;width:100%}.rowactions{display:flex;gap:8px;flex-wrap:wrap}.selling{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.selling label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}.selling input{width:100%}.profit{background:#151e1b;border:1px solid #294638;border-radius:10px;padding:10px;margin-top:8px;display:flex;justify-content:space-between;gap:8px}.profit strong{color:var(--green)}.notice{font-size:12px;color:var(--muted);margin:12px 0}.status{color:var(--green);font-size:13px;margin:10px 0}.empty{color:var(--muted);text-align:center;padding:25px}.footer{padding:22px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:720px){.summary{grid-template-columns:1fr}.products{grid-template-columns:1fr}.big{font-size:24px}.product{padding:14px}}
+</style></head><body>
+<header><div class="wrap"><div class="top"><div><div class="brand">DK HAMBURGUERIA</div><h1>Ficha de custos dos lanches</h1><p>Calcule o custo de cada receita e veja quanto sobra por venda.</p></div><button class="gold" id="addProduct">+ Novo lanche</button></div></div></header>
+<main>
+<div class="summary">
+<div class="box"><div class="label">Custo total por lanche (soma das fichas)</div><div class="big" id="allCosts">R$ 0,00</div></div>
+<div class="box"><div class="label">Lanches cadastrados</div><div class="big" id="productCount">0</div></div>
+<div class="box"><div class="label">Preço de venda médio cadastrado</div><div class="big" id="avgPrice">R$ 0,00</div></div>
 </div>
-</body>
-</html>
+<div class="toolbar"><input id="search" placeholder="Buscar lanche..."><button class="secondary" id="restore">Restaurar fichas iniciais</button><button class="secondary" id="export">Exportar fichas CSV</button></div>
+<div class="notice">Edite a quantidade e o custo unitário de cada ingrediente. O custo da receita é calculado automaticamente. Os preços iniciais vieram dos valores que você enviou; revise quantidades e itens dos lanches Duplo e 3.0.</div>
+<div class="products" id="products"></div><div class="status" id="status"></div>
+</main><div class="footer">DK Hamburgueria • Fichas de custos • Dados salvos neste navegador</div>
+<script>
+const starter=[
+{id:1,name:"DK Jr",price:0,ingredients:[
+{name:"Pão",qty:1,unit:"un",unitCost:1.73},{name:"Carne",qty:1,unit:"un",unitCost:3.50},{name:"Molhos",qty:1,unit:"porção",unitCost:.30},{name:"Manteiga",qty:1,unit:"porção",unitCost:.15},{name:"Embalagens",qty:1,unit:"kit",unitCost:1.00}]},
+{id:2,name:"DK Tradicional",price:0,ingredients:[
+{name:"Pão",qty:1,unit:"un",unitCost:1.73},{name:"Carne",qty:1,unit:"un",unitCost:3.50},{name:"Molhos",qty:1,unit:"porção",unitCost:.30},{name:"Cheddar",qty:1,unit:"porção",unitCost:.30},{name:"Cebola roxa",qty:1,unit:"porção",unitCost:.15},{name:"Manteiga",qty:1,unitCost:.15},{name:"Embalagens",qty:1,unitCost:1.00}]},
+{id:3,name:"DK Duplo",price:0,ingredients:[
+{name:"Pão",qty:1,unitCost:1.73},{name:"Carne",qty:2,unitCost:3.50},{name:"Molhos",qty:1,unitCost:.30},{name:"Cheddar",qty:2,unitCost:.30},{name:"Cebola roxa",qty:1,unitCost:.15},{name:"Manteiga",qty:1,unitCost:.15},{name:"Embalagens",qty:1,unitCost:1.00}]},
+{id:4,name:"DK 3.0",price:0,ingredients:[
+{name:"Pão",qty:1,unitCost:1.73},{name:"Carne",qty:3,unitCost:3.50},{name:"Molhos",qty:1,unitCost:.30},{name:"Cheddar",qty:3,unitCost:.30},{name:"Cebola roxa",qty:1,unitCost:.15},{name:"Manteiga",qty:1,unitCost:.15},{name:"Embalagens",qty:1,unitCost:1.00}]}
+];
+const storageKey="dkCostCardsV2";let data=read();
+function read(){try{let v=localStorage.getItem(storageKey);return v?JSON.parse(v):structuredClone(starter)}catch(e){return structuredClone(starter)}}
+function save(){localStorage.setItem(storageKey,JSON.stringify(data))}
+const n=v=>Math.max(0,Number(v)||0),br=v=>n(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const cost=p=>p.ingredients.reduce((s,x)=>s+n(x.qty)*n(x.unitCost),0);
+function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase(),list=data.map((p,i)=>({...p,index:i})).filter(p=>p.name.toLowerCase().includes(q));
+ document.getElementById("allCosts").textContent=br(data.reduce((s,p)=>s+cost(p),0));
+ document.getElementById("productCount").textContent=data.length;
+ document.getElementById("avgPrice").textContent=br(data.length?data.reduce((s,p)=>s+n(p.price),0)/data.length:0);
+ const root=document.getElementById("products");root.innerHTML="";
+ if(!list.length){root.innerHTML='<div class="product empty">Nenhum lanche encontrado.</div>';return}
+ list.forEach(p=>{
+ const c=cost(p),profit=n(p.price)-c,margin=n(p.price)>0?profit/n(p.price)*100:0;
+ const card=document.createElement("article");card.className="product";
+ card.innerHTML=`<div class="prodhead"><div><input data-p="${p.index}" data-k="name" value="${safe(p.name)}" aria-label="Nome do lanche" style="font-size:19px;font-weight:800;width:100%;max-width:250px"><div class="label" style="margin-top:6px">Custo da receita</div></div><div class="cost">${br(c)}</div></div>
+ <table class="recipe"><thead><tr><th>Ingrediente</th><th>Qtd.</th><th>Custo unit.</th><th>Subtotal</th><th></th></tr></thead><tbody>${p.ingredients.map((x,j)=>`<tr><td><input class="ing" data-p="${p.index}" data-j="${j}" data-k="name" value="${safe(x.name)}"></td><td><input type="number" min="0" step="0.01" data-p="${p.index}" data-j="${j}" data-k="qty" value="${n(x.qty)}"></td><td><input type="number" min="0" step="0.01" data-p="${p.index}" data-j="${j}" data-k="unitCost" value="${n(x.unitCost).toFixed(2)}"></td><td>${br(n(x.qty)*n(x.unitCost))}</td><td><button class="red" data-remove="${p.index}" data-j="${j}" title="Remover ingrediente">×</button></td></tr>`).join("")}</tbody></table>
+ <div class="rowactions"><button class="secondary" data-add-ing="${p.index}">+ Ingrediente</button><button class="red" data-delete="${p.index}">Excluir lanche</button></div>
+ <div class="selling"><div><label>Preço de venda (R$)</label><input type="number" min="0" step=".01" data-p="${p.index}" data-k="price" value="${n(p.price).toFixed(2)}"></div><div><label>Lucro bruto por unidade</label><input readonly value="${br(profit)}"></div></div>
+ <div class="profit"><span>Margem bruta estimada</span><strong>${n(p.price)>0?margin.toFixed(1).replace(".",",")+"%":"Informe o preço"}</strong></div>
+ <div class="notice">Não inclui custos fixos, taxas de delivery, gás, energia ou mão de obra, a menos que você os adicione como ingredientes/custos.</div>`;
+ root.appendChild(card);
+ });
+}
+document.getElementById("products").addEventListener("change",e=>{
+ let el=e.target;if(el.dataset.p===undefined||!el.dataset.k)return;
+ let p=data[+el.dataset.p],k=el.dataset.k;
+ if(el.dataset.j!==undefined){let ing=p.ingredients[+el.dataset.j];ing[k]=k==="qty"||k==="unitCost"?n(el.value):el.value.trim()}
+ else p[k]=k==="price"?n(el.value):el.value.trim();
+ save();render();
+});
+document.getElementById("products").addEventListener("click",e=>{
+ let t=e.target;
+ if(t.dataset.addIng!==undefined){data[+t.dataset.addIng].ingredients.push({name:"Novo ingrediente",qty:1,unit:"un",unitCost:0});save();render()}
+ if(t.dataset.remove!==undefined){let p=data[+t.dataset.remove];p.ingredients.splice(+t.dataset.j,1);save();render()}
+ if(t.dataset.delete!==undefined&&confirm("Excluir este lanche e sua ficha de custos?")){data.splice(+t.dataset.delete,1);save();render()}
+});
+document.getElementById("addProduct").addEventListener("click",()=>{data.push({id:Date.now(),name:"Novo lanche",price:0,ingredients:[]});save();render();document.getElementById("status").textContent="Lanche criado. Edite o nome e adicione os ingredientes."});
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("restore").addEventListener("click",()=>{if(confirm("Restaurar as quatro fichas iniciais? Isso apaga suas alterações atuais.")){data=structuredClone(starter);save();render()}});
+document.getElementById("export").addEventListener("click",()=>{
+ let rows=[["Lanche","Ingrediente","Quantidade","Custo unitário","Subtotal","Preço de venda","Custo total da receita"],...data.flatMap(p=>p.ingredients.map(x=>[p.name,x.name,x.qty,x.unitCost,(n(x.qty)*n(x.unitCost)).toFixed(2),p.price.toFixed(2),cost(p).toFixed(2)]))];
+ let csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
+ let blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="dk-fichas-de-custos.csv";a.click();URL.revokeObjectURL(url)
+});
+render();
+</script></body></html>
