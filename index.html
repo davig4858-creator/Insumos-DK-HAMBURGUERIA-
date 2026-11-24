@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DK HAMBURGUERIA — Painel de Insumos</title>
+<title>DK HAMBURGUERIA — Ficha de Custos</title>
 <style>
 :root {
   --roxo-escuro: #0F0529;
@@ -58,260 +58,47 @@ body {
   font-size: 14px;
 }
 
-.navegacao {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: rgba(42,16,99,0.4);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.nav-btn {
-  flex: 1;
-  min-width: 130px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 10px 10px 0 0;
+th, td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(74,32,144,0.3);
+}
+
+th {
+  background: rgba(212,175,55,0.15);
+  color: var(--dourado-claro);
   font-weight: 600;
-  background: rgba(42,16,99,0.5);
-  color: var(--cinza-claro);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  border-bottom: 2px solid transparent;
 }
 
-.nav-btn.ativa {
-  background: var(--dourado);
-  color: #000;
-  border-bottom: 2px solid var(--dourado-claro);
+tr:hover {
+  background: rgba(74,32,144,0.15);
 }
 
-.nav-btn:hover:not(.ativa) {
-  background: rgba(74,32,144,0.4);
-  color: var(--branco);
+.total-linha {
+  background: rgba(212,175,55,0.1);
+  font-weight: 600;
 }
 
-.painel {
-  display: none;
-  background: rgba(26,10,62,0.6);
-  border: 1px solid rgba(74,32,144,0.5);
-  border-radius: 0 0 14px 14px;
-  padding: 24px;
-}
-
-.painel.visivel {
-  display: block;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.total-valor {
+  color: var(--dourado-claro);
+  font-size: 18px;
 }
 
 h2 {
   color: var(--dourado-claro);
   font-size: 20px;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  margin: 30px 0 16px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(74,32,144,0.3);
-}
-
-h3 {
-  color: var(--branco);
-  font-size: 15px;
-  margin: 20px 0 10px;
-  opacity: 0.9;
-}
-
-.grupo-input {
-  margin-bottom: 14px;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  color: var(--cinza-claro);
-  margin-bottom: 6px;
-}
-
-input, select {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(74,32,144,0.6);
-  background: rgba(15,5,41,0.6);
-  color: var(--branco);
-  font-size: 15px;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--dourado);
-}
-
-.linha-dupla {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-@media (max-width: 480px) {
-  .linha-dupla { grid-template-columns: 1fr; }
-}
-
-.btn {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all 0.2s;
-}
-
-.btn-dourado {
-  background: linear-gradient(135deg, var(--dourado), #B8962E);
-  color: #000;
-  width: 100%;
-}
-
-.btn-verde {
-  background: var(--verde);
-  color: #000;
-}
-
-.btn-vermelho {
-  background: var(--vermelho);
-  color: #fff;
-  padding: 6px 10px;
-  font-size: 13px;
-  width: auto;
-}
-
-.btn-menor {
-  padding: 8px 14px;
-  font-size: 14px;
-}
-
-.lista-item {
-  background: rgba(42,16,99,0.4);
-  border: 1px solid rgba(74,32,144,0.4);
-  border-radius: 8px;
-  padding: 14px;
-  margin: 8px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.item-dados h4 {
-  font-size: 15px;
-  color: var(--dourado-claro);
-  margin-bottom: 4px;
-}
-
-.item-dados p {
-  font-size: 13px;
-  color: var(--cinza-claro);
-  line-height: 1.6;
-}
-
-.linha-insumo {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin: 8px 0;
-  flex-wrap: wrap;
-}
-
-.linha-insumo select, .linha-insumo input {
-  flex: 1;
-  min-width: 120px;
-}
-
-.lanche-card {
-  background: rgba(42,16,99,0.4);
-  border: 1px solid rgba(74,32,144,0.4);
-  border-radius: 10px;
-  padding: 18px;
-  margin: 12px 0;
-}
-
-.lanche-nome {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--dourado-claro);
-  margin-bottom: 10px;
-}
-
-.lanche-ingredientes {
-  font-size: 13px;
-  color: var(--cinza-claro);
-  margin-bottom: 12px;
-  line-height: 1.8;
-}
-
-.lanche-valores {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  text-align: center;
-}
-
-@media (max-width: 420px) {
-  .lanche-valores { grid-template-columns: 1fr; }
-}
-
-.valor-box {
-  padding: 8px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.2);
-}
-
-.valor-label {
-  font-size: 12px;
-  color: var(--cinza-claro);
-}
-
-.valor-val {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.custo { color: #8AB4F8; }
-.venda { color: var(--verde); }
-.lucro-baixo { color: var(--vermelho); }
-.lucro-medio { color: var(--amarelo); }
-.lucro-alto { color: var(--verde); }
-
-.resumo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.resumo-card {
-  background: rgba(42,16,99,0.4);
-  border: 1px solid rgba(74,32,144,0.4);
-  border-radius: 10px;
-  padding: 16px;
-  text-align: center;
-}
-
-.resumo-card h4 {
-  font-size: 13px;
-  color: var(--cinza-claro);
-  margin-bottom: 8px;
-}
-
-.resumo-card .valor {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--dourado-claro);
 }
 
 .aviso {
@@ -319,30 +106,10 @@ input:focus, select:focus {
   border-left: 3px solid var(--dourado);
   padding: 12px 16px;
   border-radius: 6px;
-  margin: 16px 0;
+  margin: 20px 0;
   font-size: 13px;
   color: #D0C8E8;
   line-height: 1.6;
-}
-
-.vazio {
-  text-align: center;
-  padding: 30px;
-  color: var(--cinza-claro);
-  font-style: italic;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid rgba(74,32,144,0.3);
-  margin: 14px 0;
-}
-
-.categoria {
-  font-size: 12px;
-  color: var(--dourado);
-  opacity: 0.8;
-  margin-bottom: 4px;
 }
 </style>
 </head>
@@ -350,215 +117,62 @@ hr {
 <div class="container">
   <div class="cabecalho">
     <h1>🍔 DK HAMBURGUERIA</h1>
-    <p>Painel de Controle de Insumos e Custos</p>
+    <p>Ficha de Custos dos Lanches</p>
   </div>
 
-  <div class="navegacao">
-    <button class="nav-btn ativa" onclick="abrirAba(0)">📦 Insumos</button>
-    <button class="nav-btn" onclick="abrirAba(1)">🍔 Lanches</button>
-    <button class="nav-btn" onclick="abrirAba(2)">📊 Resumo</button>
-  </div>
+  <h2>📋 DK JR — Custo: R$ 7,03</h2>
+  <table>
+    <tr><th>Ingrediente</th><th>Valor</th></tr>
+    <tr><td>Pão</td><td>R$ 1,73</td></tr>
+    <tr><td>Carne</td><td>R$ 3,50</td></tr>
+    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
+    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
+    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
+    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 7,03</strong></td></tr>
+  </table>
 
-  <!-- ABA 0: INSUMOS -->
-  <div class="painel visivel" id="aba0">
-    <h2>📦 Cadastrar Insumo</h2>
-    
-    <div class="linha-dupla">
-      <div class="grupo-input" style="grid-column: 1 / -1;">
-        <label>Nome do Insumo</label>
-        <input type="text" id="nomeInsumo" placeholder="Ex: Pão, Carne, Queijo...">
-      </div>
-    </div>
-    
-    <div class="linha-dupla">
-      <div class="grupo-input">
-        <label>Categoria</label>
-        <select id="categoria">
-          <option value="Ingrediente">Ingrediente</option>
-          <option value="Molho">Molho</option>
-          <option value="Embalagem">Embalagem</option>
-          <option value="Outro">Outro</option>
-        </select>
-      </div>
-      <div class="grupo-input">
-        <label>Unidade de Medida</label>
-        <select id="unidade">
-          <option value="kg">Quilograma (kg)</option>
-          <option value="g">Grama (g)</option>
-          <option value="un">Unidade (un)</option>
-          <option value="l">Litro (L)</option>
-          <option value="ml">Mililitro (mL)</option>
-          <option value="cx">Caixa</option>
-          <option value="pc">Pacote</option>
-        </select>
-      </div>
-    </div>
-    
-    <div class="linha-dupla">
-      <div class="grupo-input">
-        <label>Quantidade Comprada</label>
-        <input type="number" id="quantidade" step="0.001" placeholder="Ex: 1">
-      </div>
-      <div class="grupo-input">
-        <label>Valor Pago (R$)</label>
-        <input type="number" id="valorPago" step="0.01" placeholder="Ex: 35.00">
-      </div>
-    </div>
-    
-    <div class="grupo-input">
-      <label>Porção usada (opcional)</label>
-      <input type="text" id="porcao" placeholder="Ex: 20ml">
-    </div>
-    
-    <button class="btn btn-dourado" onclick="cadastrarInsumo()">➕ Cadastrar Insumo</button>
+  <h2>📋 DK Tradicional — Custo: R$ 7,23</h2>
+  <table>
+    <tr><th>Ingrediente</th><th>Valor</th></tr>
+    <tr><td>Pão</td><td>R$ 1,73</td></tr>
+    <tr><td>Carne</td><td>R$ 3,50</td></tr>
+    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
+    <tr><td>Cheddar</td><td>R$ 0,30</td></tr>
+    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
+    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
+    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
+    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 7,23</strong></td></tr>
+  </table>
 
-    <h3>📋 Insumos Cadastrados</h3>
-    <div id="listaInsumos"><div class="vazio">Carregando...</div></div>
-  </div>
+  <h2>📋 DK Duplo — Custo: R$ 11,03</h2>
+  <table>
+    <tr><th>Ingrediente</th><th>Valor</th></tr>
+    <tr><td>Pão</td><td>R$ 1,73</td></tr>
+    <tr><td>Carne (2x)</td><td>R$ 7,00</td></tr>
+    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
+    <tr><td>Cheddar (2x)</td><td>R$ 0,60</td></tr>
+    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
+    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
+    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
+    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 11,03</strong></td></tr>
+  </table>
 
-  <!-- ABA 1: LANCHES -->
-  <div class="painel" id="aba1">
-    <h2>🍔 Cadastrar Lanche</h2>
-    
-    <div class="linha-dupla">
-      <div class="grupo-input">
-        <label>Nome do Lanche</label>
-        <input type="text" id="nomeLanche" placeholder="Ex: DK JR">
-      </div>
-      <div class="grupo-input">
-        <label>Preço de Venda (R$)</label>
-        <input type="number" id="precoVenda" step="0.01" placeholder="17.99">
-      </div>
-    </div>
+  <h2>📋 DK 3.0 — Custo: R$ 14,83</h2>
+  <table>
+    <tr><th>Ingrediente</th><th>Valor</th></tr>
+    <tr><td>Pão</td><td>R$ 1,73</td></tr>
+    <tr><td>Carne (3x)</td><td>R$ 10,50</td></tr>
+    <tr><td>Molhos</td><td>R$ 0,30</td></tr>
+    <tr><td>Cheddar (3x)</td><td>R$ 0,90</td></tr>
+    <tr><td>Cebola Rocha</td><td>R$ 0,15</td></tr>
+    <tr><td>Manteiga</td><td>R$ 0,15</td></tr>
+    <tr><td>Embalagem</td><td>R$ 1,00</td></tr>
+    <tr class="total-linha"><td><strong>TOTAL</strong></td><td class="total-valor"><strong>R$ 14,83</strong></td></tr>
+  </table>
 
-    <h3>🧪 Ingredientes usados</h3>
-    <div id="selecaoInsumos"></div>
-    <button class="btn btn-verde btn-menor" style="margin:8px 0 16px;" onclick="adicionarLinhaInsumo()">➕ Adicionar Ingrediente</button>
-
-    <button class="btn btn-dourado" onclick="calcularESalvarLanche()">💾 Calcular e Salvar Lanche</button>
-
-    <h3>📋 Lanches Cadastrados</h3>
-    <div id="listaLanches"><div class="vazio">Nenhum lanche cadastrado ainda.</div></div>
-  </div>
-
-  <!-- ABA 2: RESUMO -->
-  <div class="painel" id="aba2">
-    <h2>📊 Resumo de Custos</h2>
-    
-    <div class="aviso">
-      💡 Sempre que atualizar o preço de um insumo, recalcula o lanche para ver o novo custo!
-    </div>
-
-    <div id="conteudoResumo">
-      <div class="vazio">Cadastre lanches para ver o resumo.</div>
-    </div>
+  <div class="aviso">
+    💡 Atualizado em: 23/11/2026 — DK Hamburgueria
   </div>
 </div>
-
-<script>
-let abaAtual = 0;
-let insumos = [];
-let lanches = [];
-let linhasInsumo = [{ id: Date.now() }];
-
-function salvar(chave, valor) {
-  try { localStorage.setItem(chave, JSON.stringify(valor)); return true; }
-  catch (e) { return false; }
-}
-
-function carregar(chave) {
-  try {
-    const dados = localStorage.getItem(chave);
-    return dados ? JSON.parse(dados) : null;
-  } catch (e) { return null; }
-}
-
-// DADOS INICIAIS
-function dadosIniciais() {
-  return [
-    { id:1, nome:'Pão', categoria:'Ingrediente', unidade:'un', quantidade:1, valorPago:1.73, custoUnitario:1.73, porcao:'1 un' },
-    { id:2, nome:'Carne', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:3.50, custoUnitario:3.50, porcao:'1 porção' },
-    { id:3, nome:'Molhos', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
-    { id:4, nome:'Manteiga', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
-    { id:5, nome:'Embalagem', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:1.00, custoUnitario:1.00, porcao:'1 un' },
-    { id:6, nome:'Cheddar', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'1 porção' },
-    { id:7, nome:'Cebola Rocha', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.15, custoUnitario:0.15, porcao:'1 porção' },
-    { id:8, nome:'Maionese Verde (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
-    { id:9, nome:'Maionese de Bacon (20ml)', categoria:'Molho', unidade:'porção', quantidade:1, valorPago:0.14, custoUnitario:0.14, porcao:'20ml' },
-    { id:10, nome:'Cheddar Cremoso (20ml)', categoria:'Ingrediente', unidade:'porção', quantidade:1, valorPago:0.30, custoUnitario:0.30, porcao:'20ml' },
-    { id:11, nome:'Embalagem Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.80, custoUnitario:0.80 },
-    { id:12, nome:'Saco Kraft', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.20, custoUnitario:0.20 },
-    { id:13, nome:'Embalagem simples', categoria:'Embalagem', unidade:'un', quantidade:1, valorPago:0.10, custoUnitario:0.10 },
-    { id:14, nome:'Batata', categoria:'Outro', unidade:'cx', quantidade:1, valorPago:20.00, custoUnitario:20.00 },
-    { id:15, nome:'Gordura', categoria:'Outro', unidade:'L', quantidade:1, valorPago:200.00, custoUnitario:200.00 },
-  ];
-}
-
-function lanchesIniciais() {
-  return [
-    { id:1, nome:'DK JR', precoVenda:0, usos:[
-      {nome:'Pão', quantidadeUsada:1, custo:1.73},
-      {nome:'Carne', quantidadeUsada:1, custo:3.50},
-      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
-      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
-      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
-    ], custoTotal:7.03 },
-    { id:2, nome:'DK Tradicional', precoVenda:0, usos:[
-      {nome:'Pão', quantidadeUsada:1, custo:1.73},
-      {nome:'Carne', quantidadeUsada:1, custo:3.50},
-      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
-      {nome:'Cheddar', quantidadeUsada:1, custo:0.30},
-      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
-      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
-      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
-    ], custoTotal:7.23 },
-    { id:3, nome:'DK Duplo', precoVenda:0, usos:[
-      {nome:'Pão', quantidadeUsada:1, custo:1.73},
-      {nome:'Carne', quantidadeUsada:2, custo:7.00},
-      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
-      {nome:'Cheddar', quantidadeUsada:2, custo:0.60},
-      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
-      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
-      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
-    ], custoTotal:11.03 },
-    { id:4, nome:'DK 3.0', precoVenda:0, usos:[
-      {nome:'Pão', quantidadeUsada:1, custo:1.73},
-      {nome:'Carne', quantidadeUsada:3, custo:10.50},
-      {nome:'Molhos', quantidadeUsada:1, custo:0.30},
-      {nome:'Cheddar', quantidadeUsada:3, custo:0.90},
-      {nome:'Cebola Rocha', quantidadeUsada:1, custo:0.15},
-      {nome:'Manteiga', quantidadeUsada:1, custo:0.15},
-      {nome:'Embalagem', quantidadeUsada:1, custo:1.00}
-    ], custoTotal:14.83 },
-  ];
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  let dadosSalvos = carregar('insumosDK');
-  insumos = dadosSalvos ? dadosSalvos : dadosIniciais();
-  
-  let lanchesSalvos = carregar('lanchesDK');
-  lanches = lanchesSalvos ? lanchesSalvos : lanchesIniciais();
-  
-  salvar('insumosDK', insumos);
-  salvar('lanchesDK', lanches);
-  
-  abrirAba(0);
-});
-
-function abrirAba(n) {
-  abaAtual = n;
-  document.querySelectorAll('.painel').forEach((p, i) => p.classList.toggle('visivel', i === n));
-  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('ativa', i === n));
-  
-  if (n === 0) carregarListaInsumos();
-  if (n === 1) { carregarSelecaoInsumos(); carregarListaLanches(); }
-  if (n === 2) carregarResumo();
-}
-
-// INSUMOS
-function cadastrarInsumo() {
-  const nome = document.getElementById('nomeInsumo').value.trim();
-  const categoria = document.getElementById('categoria').value;
-  const unidade = document.getElementById('unidade').value;
-  const qtd = Number(document.getElementById('
+</body>
+</html>
